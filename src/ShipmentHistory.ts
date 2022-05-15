@@ -1,10 +1,7 @@
 import Shipment from "./Shipment";
 
 class ShipmentHistory {
-    constructor() {
-        
-    }
-
+    
     update(shipment: Shipment) {
         this.history.push(shipment);
     }

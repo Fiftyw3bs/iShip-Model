@@ -1,4 +1,4 @@
-const moment = require('moment')
+import moment from 'moment';
 
 interface AvailabilityPeriod {
     day: string
@@ -25,13 +25,13 @@ class Availability {
     }
     
     public isAvailable(datetime: Date) : boolean {
-        var available: boolean = false;
+        let available = false;
         const day = datetime.toLocaleString("en", { weekday: "long" }).toLowerCase();
         if (this.times.has(day)) 
         {
             this.times.get(day)?.forEach((to: string, from: string) => {
-                var start = new Date(moment(from, [this.format]).format());
-                var end = new Date(moment(to, [this.format]).format());
+                const start = new Date(moment(from, [this.format]).format());
+                const end = new Date(moment(to, [this.format]).format());
 
                 const startHour = start.getHours()
                 const startMinute = start.getMinutes()

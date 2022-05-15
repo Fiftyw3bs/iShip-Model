@@ -1,5 +1,4 @@
 import Shipment from "../Shipment";
-import Dispatcher from "../user/Dispatcher";
 import LoggedInUser from "../user/User";
 import { Errors, OkMessage, Result } from "./Errors";
 
@@ -11,7 +10,7 @@ enum DispatchState {
 }
 
 interface IDeliveryStep {
-    id:                             String;
+    id:                             string;
     dispatcher:                     LoggedInUser;
     source:                         LoggedInUser;
     recipient:                      LoggedInUser;

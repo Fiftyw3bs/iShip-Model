@@ -10,12 +10,12 @@ type Hour = number;
 
 class Reserver extends LoggedInUser {
 
-    constructor(id: any, costPerHour: Cost, location: Address, availability: Availability) 
+    constructor(id: string, costPerHour: Cost, location: Address, availability: Availability) 
     {
         super(id)
-        this.costPerHour = costPerHour!;
+        this.costPerHour = costPerHour;
         this.location = location;
-        this.available = availability!;
+        this.available = availability;
     }
 
     public set cost(v : Cost) {

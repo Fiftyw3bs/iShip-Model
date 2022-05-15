@@ -13,7 +13,7 @@ class DeliveryByDispatcherFromReserverToReceiver implements IDeliveryStep {
     recipient:      LoggedInUser;
     completionTime: Date;
     dispatchState:  DispatchState;
-    id:             String;
+    id:             string;
 
     constructor(source: Reserver, recipient: Receiver, dispatcher: Dispatcher) {
         this.dispatcher = dispatcher;

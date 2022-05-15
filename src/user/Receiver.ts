@@ -2,7 +2,7 @@ import LoggedInUser from "./User";
 import Address from "../Location";
 
 class Receiver extends LoggedInUser {
-    constructor(id: String = 'UNASSIGNED') {
+    constructor(id = 'UNASSIGNED') {
         super(id)
     }
 

@@ -1,10 +1,9 @@
-
 const uuid = require('crypto')
 
-export default class Identification {
+export default class Identifiable {
     constructor() {
         this.id = uuid.v4();
     }
 
-    protected id: String;
+    protected id: string;
 }

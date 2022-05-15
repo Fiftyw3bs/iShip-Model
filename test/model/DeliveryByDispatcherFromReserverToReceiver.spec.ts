@@ -2,7 +2,6 @@ import { expect } from "chai";
 import 'mocha';
 import { Package, PackageType } from "../../src/Package";
 import Shipment, { ShipmentState } from "../../src/Shipment";
-import DeliveryByDispatcherFromReserverToReceiver from "../../src/delivery/DeliveryByDispatcherFromReserverToReceiver";
 import { DeliveryStepType, delivery_step, FaultType, user, user_fault } from "../helper.test";
 import { DispatchState } from "../../src/interfaces/IDeliveryStep";
 

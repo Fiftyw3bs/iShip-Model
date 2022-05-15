@@ -9,12 +9,12 @@ interface PackageSize {
     length: number,
     width: number,
     height: number
-};
+}
 
 class Package {
-    constructor(type: PackageType, size?: PackageSize) {
+    constructor(type: PackageType, size: PackageSize = {length: 0, height: 0, width:0}) {
         this._type = type;
-        this._size = size!;
+        this._size = size;
     }
     
     public get type() : PackageType {
@@ -26,7 +26,7 @@ class Package {
     }
 
     private _type:   PackageType
-    private _image:  Array<String> = new Array<String>();
+    private _image:  Array<string> = new Array<string>();
     private _size:   PackageSize;
 }
 

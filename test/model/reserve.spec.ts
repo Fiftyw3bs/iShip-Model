@@ -23,7 +23,7 @@ describe('Test package reservation', () => {
         var av = new Availability(DateFormat.FORMAT_24_HOUR);
         av.setAvailability("monday", "12:13", "15:30");
         var reserver = new Reserver(
-            x,
+            x.toString(),
             { currency: 'EUR', amount: gen(max) },
             new Address(),
             av
@@ -32,7 +32,7 @@ describe('Test package reservation', () => {
     }
 
     it('should be able to reject reserve request [reserver is selected by sender]', () => {
-        var sender = new Sender(6);
+        var sender = new Sender((6).toString());
         const content = new Package(PackageType.NonPerishable);
         const receiver = new Receiver();
         var shipment = Shipment.create(content, sender, receiver);
@@ -47,7 +47,7 @@ describe('Test package reservation', () => {
     })
 
     it('should not be able to reject reserve request [reserver is not selected by sender]', () => {
-        var sender = new Sender(6);
+        var sender = new Sender((6).toString());
         const content = new Package(PackageType.NonPerishable);
         const receiver = new Receiver();
         var shipment = Shipment.create(content, sender, receiver);
@@ -59,7 +59,7 @@ describe('Test package reservation', () => {
     })
 
     it('should not be able to add reserver [invalid reservable package type]', () => {
-        var sender = new Sender(6);
+        var sender = new Sender((6).toString());
         const content = new Package(PackageType.Perishable);
         const receiver = new Receiver();
         reservers[2].packageType = PackageType.NonPerishable;
@@ -68,7 +68,7 @@ describe('Test package reservation', () => {
     })
 
     it('should be able to add reserver [all package type reservable]', () => {
-        var sender = new Sender(6);
+        var sender = new Sender((6).toString());
         const content = new Package(PackageType.Perishable);
         const receiver = new Receiver();
         reservers[2].packageType = PackageType.All;
@@ -77,7 +77,7 @@ describe('Test package reservation', () => {
     })
 
     it('should not be able to add reserver [reserver already added]', () => {
-        var sender = new Sender(6);
+        var sender = new Sender((6).toString());
         const content = new Package(PackageType.Perishable);
         const receiver = new Receiver();
         reservers[2].packageType = PackageType.All;

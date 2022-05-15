@@ -3,7 +3,6 @@ import { IDeliveryStep } from "./interfaces/IDeliveryStep";
 import Cost from "./interfaces/Cost";
 import Sender from "./user/Sender";
 import { Err, Errors, Ok, OkMessage, Result } from "./interfaces/Errors";
-import { v4 } from "uuid";
 
 export enum DeliveryRequestState {
     AWAITING_APPROVAL,

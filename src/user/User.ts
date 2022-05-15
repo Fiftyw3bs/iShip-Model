@@ -1,7 +1,7 @@
-import { Availability } from "../Availability";
+import { Availability } from "../Availability"
 
 class LoggedInUser {
-    constructor(id: any) {
+    constructor(id: string) {
         this._id = id
     }
 
@@ -10,15 +10,15 @@ class LoggedInUser {
     }
     
     public get availability() : Availability {
-        return this.available
+        return this.available;
     }
 
-    public get id() : String {
+    public get id() : string {
         return this._id;
     }
     
-    available:          Availability = new Availability();;
-    private _id:                 String;
+    available:          Availability = new Availability();
+    private _id:                 string;
 }
 
 export default LoggedInUser

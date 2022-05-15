@@ -8,7 +8,7 @@ import { Errors, Ok, Err, Result, OkMessage } from "./interfaces/Errors";
 import { v4 } from "uuid";
 import Dispatcher from "./user/Dispatcher";
 
-enum Priority {
+export enum Priority {
     Low = 1,
     Medium,
     High
@@ -39,7 +39,7 @@ class Shipment {
         , sender: Sender
         , receiver: Receiver
     ): Shipment {
-        var shipment = new Shipment(content, sender, receiver);
+        const shipment = new Shipment(content, sender, receiver);
         sender.shipmentHistory.update(shipment)
         return shipment;
     }
@@ -154,7 +154,7 @@ class Shipment {
         return this._reservers;
     }
     
-    public get id() : String {
+    public get id() : string {
         return this._id;
     }
 
@@ -167,7 +167,7 @@ class Shipment {
     private _deliverySteps: Array<IDeliveryStep> = new Array<IDeliveryStep>();
     private _reservers: Array<Reserver> = new Array<Reserver>();
     private _sender: Sender;
-    private _id: String;
+    private _id: string;
     private _currentHolder: LoggedInUser;
     private _receiver: Receiver;
     private _state: ShipmentState;

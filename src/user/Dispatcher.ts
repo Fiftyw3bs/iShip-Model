@@ -11,7 +11,7 @@ enum VehicleType {
 }
 
 class Dispatcher extends LoggedInUser {
-    constructor(id: String) {
+    constructor(id: string) {
         super(id)
     }
 
@@ -24,7 +24,7 @@ class Dispatcher extends LoggedInUser {
     }
 
     bid(shipment: Shipment, cost: Cost, step: IDeliveryStep): DeliveryRequest {
-        var request = new DeliveryRequest(shipment, cost, step);
+        const request = new DeliveryRequest(shipment, cost, step);
         this.deliveryRequests.push(request);
         return request
     }

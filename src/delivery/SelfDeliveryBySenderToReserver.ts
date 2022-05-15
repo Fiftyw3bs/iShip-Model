@@ -9,9 +9,9 @@ import { v4 } from "uuid";
 class SelfDeliveryBySenderToReserver implements IDeliveryStep {
     source:         LoggedInUser;
     recipient:      LoggedInUser;
-    completionTime: Date = new Date();;
+    completionTime: Date = new Date();
     dispatchState:  DispatchState;
-    id:             String;
+    id:             string;
     dispatcher:     Sender;
 
     constructor(source: Sender, recipient: Reserver) {
