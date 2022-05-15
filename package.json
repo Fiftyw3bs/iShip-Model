@@ -8,7 +8,8 @@
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "coverage": "nyc mocha -r ts-node/register test/**/*.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "mocha": "^10.0.0",
     "moment": "^2.29.3",
     "nodemon": "^2.0.16",
+    "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "ts-results": "^3.3.0",
