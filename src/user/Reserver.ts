@@ -33,8 +33,8 @@ class Reserver extends LoggedInUser {
         }
     }
 
-    rejectReserveRequest(request: ReserveRequest) : Result<OkMessage, Errors> {
-        return request.reject(this);
+    async rejectReserveRequest(request: ReserveRequest) {
+        return await request.reject(this);
     }
     
     costPerHour:        Cost = {currency: 'EUR', amount: 100};

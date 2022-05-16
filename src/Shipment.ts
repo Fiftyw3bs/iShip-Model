@@ -44,78 +44,98 @@ class Shipment {
         return shipment;
     }
 
-    addDeliveryStep(step: IDeliveryStep): Result<OkMessage, Errors> {
-        if (this._deliverySteps.map(e => { return e.dispatcher.id }).indexOf(step.dispatcher.id) > -1) {
-            return Err("UserAlreadyADispatcher");
-        }
-        return step.init(this).andThen(
-            (e) => {
-                step.dispatchState = DispatchState.ACCEPTED;
-                this._deliverySteps.push(step);
-                return Ok(e);
+    addDeliveryStep(step: IDeliveryStep): Promise<Result<OkMessage, Errors>> {
+        return new Promise<Result<OkMessage, Errors>>(
+            (resolve, reject) => {
+                if (this._deliverySteps.map(e => { return e.dispatcher.id }).indexOf(step.dispatcher.id) > -1) {
+                    reject(Err("UserAlreadyADispatcher"));
+                }
+                resolve(step.init(this).andThen(
+                    (e) => {
+                        step.dispatchState = DispatchState.ACCEPTED;
+                        this._deliverySteps.push(step);
+                        return Ok(e);
+                    }
+                ));
+            }
+        )
+    }
+
+    addReserver(reserver: Reserver): Promise<Result<OkMessage, Errors>> {
+        return new Promise<Result<OkMessage, Errors>>(
+            (resolve, reject) => {
+                if (this.content.type != reserver.packageType && reserver.packageType != PackageType.All) {
+                    reject(Err("InvalidReservablePackage"))
+                }
+                if (this.reservers.includes(reserver, 0)) {
+                    reject(Err("ReserverAlreadySelected"))
+                }
+                this.reservers.push(reserver);
+                resolve(Ok("ReserverAdded"));
             }
         );
     }
 
-    addReserver(reserver: Reserver): Result<OkMessage, Errors> {
-        if (this.content.type != reserver.packageType && reserver.packageType != PackageType.All) {
-            return Err("InvalidReservablePackage")
-        }
-        if (this.reservers.includes(reserver, 0)) {
-            return Err("ReserverAlreadySelected")
-        }
-        this.reservers.push(reserver);
-        return Ok("ReserverAdded");
-    }
-
-    removeReserver(reserver: Reserver): Result<OkMessage, Errors> {
-        const index = this.reservers.map(e => { return e.id }).indexOf(reserver.id);
-        if (index > -1) {
-            this.reservers.splice(index, 1);
-            return Ok("ReserverRemoved");
-        } else {
-            return Err("ReserverNotFound");
-        }
-    }
-
-    pickup(step: IDeliveryStep): Result<OkMessage, Errors> {
-        if (step.source.id != this.currentHolder.id) {
-            return Err("UserNotCurrentHolder");
-        }
-        const index = this._deliverySteps.map(e => { return e.id }).indexOf(step.id);
-        if (index > -1) {
-            if (this._deliverySteps[index].dispatchState == DispatchState.ACCEPTED) {
-                this._state = ShipmentState.IN_TRANSIT;
-                this._deliverySteps[index].dispatchState = DispatchState.IN_TRANSIT;
-                step.dispatchState = DispatchState.IN_TRANSIT;
-                this._currentHolder = step.dispatcher;
-                return Ok("PackagePickedUp");
-            } else {
-                return Err("DeliveryStepNotYetAccepted");
+    removeReserver(reserver: Reserver): Promise<Result<OkMessage, Errors>> {
+        return new Promise<Result<OkMessage, Errors>>(
+            (resolve, reject) => {
+                const index = this.reservers.map(e => { return e.id }).indexOf(reserver.id);
+                if (index > -1) {
+                    this.reservers.splice(index, 1);
+                    resolve(Ok("ReserverRemoved"));
+                } else {
+                    reject(Err("ReserverNotFound"));
+                }
             }
-        } else {
-            return Err("DeliveryStepNotFound");
-        }
+        );
     }
 
-    deliver(step: IDeliveryStep): Result<OkMessage, Errors> {
-        if (step.dispatcher.id != this.currentHolder.id) {
-            return Err("UserNotCurrentHolder");
-        }
-        const index = this._deliverySteps.map(e => { return e.id }).indexOf(step.id);
-        if (index > -1) {
-            if (this._deliverySteps[index].dispatchState == DispatchState.IN_TRANSIT) {
-                this._state = this.receiver.id == step.recipient.id ? ShipmentState.DELIVERED : this._state;
-                this._deliverySteps[index].dispatchState = DispatchState.COMPLETED;
-                this._currentHolder = step.recipient;
-                step.dispatchState = DispatchState.COMPLETED;
-                return Ok("PackageDelivered");
-            } else {
-                return Err("DeliveryStepNotInitialized");
+    pickup(step: IDeliveryStep): Promise<Result<OkMessage, Errors>> {
+        return new Promise<Result<OkMessage, Errors>>(
+            (resolve, reject) => {
+                if (step.source.id != this.currentHolder.id) {
+                    reject(Err("UserNotCurrentHolder"));
+                }
+                const index = this._deliverySteps.map(e => { return e.id }).indexOf(step.id);
+                if (index > -1) {
+                    if (this._deliverySteps[index].dispatchState == DispatchState.ACCEPTED) {
+                        this._state = ShipmentState.IN_TRANSIT;
+                        this._deliverySteps[index].dispatchState = DispatchState.IN_TRANSIT;
+                        step.dispatchState = DispatchState.IN_TRANSIT;
+                        this._currentHolder = step.dispatcher;
+                        resolve(Ok("PackagePickedUp"));
+                    } else {
+                        reject(Err("DeliveryStepNotYetAccepted"));
+                    }
+                } else {
+                    reject(Err("DeliveryStepNotFound"));
+                }
             }
-        } else {
-            return Err("DeliveryStepNotFound");
-        }
+        );
+    }
+
+    deliver(step: IDeliveryStep): Promise<Result<OkMessage, Errors>> {
+        return new Promise<Result<OkMessage, Errors>>(
+            (resolve, reject) => {
+                if (step.dispatcher.id != this.currentHolder.id) {
+                    reject(Err("UserNotCurrentHolder"));
+                }
+                const index = this._deliverySteps.map(e => { return e.id }).indexOf(step.id);
+                if (index > -1) {
+                    if (this._deliverySteps[index].dispatchState == DispatchState.IN_TRANSIT) {
+                        this._state = this.receiver.id == step.recipient.id ? ShipmentState.DELIVERED : this._state;
+                        this._deliverySteps[index].dispatchState = DispatchState.COMPLETED;
+                        this._currentHolder = step.recipient;
+                        step.dispatchState = DispatchState.COMPLETED;
+                        resolve(Ok("PackageDelivered"));
+                    } else {
+                        reject(Err("DeliveryStepNotInitialized"));
+                    }
+                } else {
+                    reject(Err("DeliveryStepNotFound"));
+                }
+            }
+        );
     }
 
     status(): ShipmentState {
@@ -161,7 +181,6 @@ class Shipment {
     public get dispatchers() : Array<Dispatcher> {
         return this._deliverySteps.map(e => {return e.dispatcher as Dispatcher})
     }
-    
     
     private _content: Package;
     private _deliverySteps: Array<IDeliveryStep> = new Array<IDeliveryStep>();
