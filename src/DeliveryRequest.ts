@@ -40,10 +40,11 @@ class DeliveryRequest {
 
     async reject(sender: Sender): Promise<Result<OkMessage, Errors>> {
         if (this.shipment.sender.id == sender.id) {
+            var that = this
             return await this.shipment.addDeliveryStep(this.step).then(
                 e => e.andThen(
                     () => {
-                        this.state = DeliveryRequestState.REJECTED;
+                        that.state = DeliveryRequestState.REJECTED;
                         return Ok("DeliveryRequestRejected")
                     }
                 )
