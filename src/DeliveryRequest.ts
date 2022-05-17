@@ -11,10 +11,10 @@ export enum DeliveryRequestState {
 }
 
 class DeliveryRequest {
-    shipment:   Shipment;
-    state:      DeliveryRequestState
-    step:       IDeliveryStep;
-    cost:       Cost;
+    shipment: Shipment;
+    state: DeliveryRequestState
+    step: IDeliveryStep;
+    cost: Cost;
 
     constructor(shipment: Shipment, cost: Cost, step: IDeliveryStep) {
         this.shipment = shipment;
@@ -38,16 +38,13 @@ class DeliveryRequest {
         }
     }
 
-    async reject(sender: Sender): Promise<Result<OkMessage, Errors>> {
+    reject(sender: Sender): Promise<Result<OkMessage, Errors>> {
         if (this.shipment.sender.id == sender.id) {
-            var that = this
-            return await this.shipment.addDeliveryStep(this.step).then(
-                e => e.andThen(
-                    () => {
-                        that.state = DeliveryRequestState.REJECTED;
-                        return Ok("DeliveryRequestRejected")
-                    }
-                )
+            return new Promise<Result<OkMessage, Errors>>(
+                (resolve) => {
+                    this.state = DeliveryRequestState.REJECTED;
+                    resolve(Ok("DeliveryRequestRejected"))
+                }
             )
         } else {
             return Promise.reject(Err("InvalidUser"));

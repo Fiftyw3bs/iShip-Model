@@ -24,9 +24,9 @@ describe('Package Delivery Step | Delivery By Dispatcher From Reserver to Receiv
         shipment.pickup(deliveryStep)
         shipment.deliver(deliveryStep)
         
-        const pickedup = await shipment.pickup(deliveryStep1);
+        const pickedup = shipment.pickup(deliveryStep1);
 
-        expect(pickedup.val).to.equal(Ok("PackagePickedUp"));
+        expect(pickedup).to.eventually.equal(Ok("PackagePickedUp"));
         expect(deliveryStep1.status()).to.equal(DispatchState.IN_TRANSIT);
         expect(shipment.currentHolder.id).to.equal(deliveryStep1.dispatcher.id);
     })
