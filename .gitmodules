@@ -1,0 +1,3 @@
+[submodule "lib/node-session-client"]
+	path = lib/node-session-client
+	url = https://github.com/hesiod-project/node-session-client.git
