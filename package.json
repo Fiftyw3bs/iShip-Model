@@ -27,7 +27,6 @@
     "eslint": "^8.15.0",
     "mocha": "^10.0.0",
     "moment": "^2.29.3",
-    "node-session-client": "git+https://github.com/hesiod-project/node-session-client.git",
     "nodemon": "^2.0.16",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
