@@ -13,22 +13,24 @@ class ReserveRequest {
         this.requestedAt = new Date();
     }
 
-    reject(reserver: Reserver): Result<OkMessage, Errors> {
+    async reject(reserver: Reserver): Promise<Result<OkMessage, Errors>> {
         if (this.reserver.id != reserver.id) {
-            return Err("InvalidUser")
+            return Promise.reject(Err("InvalidUser"))
         }
         if (this.shipment.sender.id == this.reserver.id) {
-            return Err("SenderCantBeReserver")
+            return Promise.reject(Err("SenderCantBeReserver"))
         }
         if (this.shipment.receiver.id == this.reserver.id) {
-            return Err("ReceiverCantBeReserver")
+            return Promise.reject(Err("ReceiverCantBeReserver"))
         }
-        const rejected = this.shipment.removeReserver(this.reserver);
-        if (rejected.err) {
-            return rejected
-        } else {
-            return Ok("ReserveRequestRejected");
-        }
+        return await this.shipment.removeReserver(this.reserver).then(
+            () => {
+                return Ok("ReserveRequestRejected");
+            },
+            (error) => {
+                return error
+            }
+        )
     }
 }
 

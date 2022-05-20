@@ -11,10 +11,10 @@ export enum DeliveryRequestState {
 }
 
 class DeliveryRequest {
-    shipment:   Shipment;
-    state:      DeliveryRequestState
-    step:       IDeliveryStep;
-    cost:       Cost;
+    shipment: Shipment;
+    state: DeliveryRequestState
+    step: IDeliveryStep;
+    cost: Cost;
 
     constructor(shipment: Shipment, cost: Cost, step: IDeliveryStep) {
         this.shipment = shipment;
@@ -23,25 +23,31 @@ class DeliveryRequest {
         this.state = DeliveryRequestState.AWAITING_APPROVAL;
     }
 
-    accept(sender: Sender): Result<OkMessage, Errors> {
+    async accept(sender: Sender): Promise<Result<OkMessage, Errors>> {
         if (sender.id == this.shipment.sender.id) {
-            return this.shipment.addDeliveryStep(this.step).andThen(
-                () => {
-                    this.state = DeliveryRequestState.APPROVED;
-                    return Ok("DeliveryRequestAccepted");
-                }
-            );
+            return await this.shipment.addDeliveryStep(this.step).then(
+                e => e.andThen(
+                    () => {
+                        this.state = DeliveryRequestState.APPROVED;
+                        return Ok("DeliveryRequestAccepted");
+                    }
+                )
+            )
         } else {
-            return Err("InvalidUser");
+            return Promise.reject(Err("InvalidUser"));
         }
     }
 
-    reject(sender: Sender): Result<OkMessage, Errors> {
+    reject(sender: Sender): Promise<Result<OkMessage, Errors>> {
         if (this.shipment.sender.id == sender.id) {
-            this.state = DeliveryRequestState.REJECTED;
-            return Ok("DeliveryRequestRejected")
+            return new Promise<Result<OkMessage, Errors>>(
+                (resolve) => {
+                    this.state = DeliveryRequestState.REJECTED;
+                    resolve(Ok("DeliveryRequestRejected"))
+                }
+            )
         } else {
-            return Err("InvalidUser")
+            return Promise.reject(Err("InvalidUser"));
         }
     }
 }

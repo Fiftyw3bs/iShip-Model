@@ -4,7 +4,6 @@ import ReserveRequest from "../ReserveRequest";
 import Cost from "../interfaces/Cost";
 import { Availability } from "../Availability";
 import Address from "../Location";
-import { Errors, OkMessage, Result } from "../interfaces/Errors";
 
 type Hour = number;
 
@@ -33,8 +32,8 @@ class Reserver extends LoggedInUser {
         }
     }
 
-    rejectReserveRequest(request: ReserveRequest) : Result<OkMessage, Errors> {
-        return request.reject(this);
+    async rejectReserveRequest(request: ReserveRequest) {
+        return await request.reject(this);
     }
     
     costPerHour:        Cost = {currency: 'EUR', amount: 100};
