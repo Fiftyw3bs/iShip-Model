@@ -31,14 +31,23 @@ describe('Package Delivery Step | Delivery By Dispatcher From Reserver to Receiv
         expect(shipment.currentHolder.id).to.equal(deliveryStep1.dispatcher.id);
     })
     
-    it('should return true (delivery step not yet accepted) | pickup()', async () => {
+    it('SenderCantBeDispatcher', async () => {
         var user_test = user(1, 1, 1, 1);
-        const deliveryStep = delivery_step(DeliveryStepType.DeliveryByDispatcherFromSenderToReserver, user_fault(FaultType.ReceiverAsReserver))
+        const deliveryStep = delivery_step(DeliveryStepType.DeliveryByDispatcherFromSenderToReceiver, user_fault(FaultType.ReceiverAsReserver))
         var shipment = Shipment.create(new Package(PackageType.NonPerishable), user_test.sender, user_test.receiver);
-        
         expect((await shipment.addReserver(user_test.reserver)).ok).to.equal(true);
-        const pickedup = shipment.pickup(deliveryStep);
-        expect(pickedup).to.be.rejectedWith(Err("DeliveryStepNotFound"));
+        expect((await shipment.addDeliveryStep(deliveryStep)).val).to.equal("DeliveryStepInitialized");
+        user(1, 1, 1, 2);
+        const deliveryStep1 = delivery_step(DeliveryStepType.DeliveryByDispatcherFromReserverToReceiver, user_fault(FaultType.SenderAsReserver))
+        expect((await shipment.addDeliveryStep(deliveryStep1)).val).to.equal("SenderCantBeDispatcher");
+        
+        
+        console.log(user_test)
+        console.log(shipment.currentHolder)
+        shipment.pickup(deliveryStep)
+        shipment.deliver(deliveryStep)
+        console.log(shipment.currentHolder)
+        expect(shipment.currentHolder.id).to.equal(user_test.reserver.id)
     }) 
 });
     
