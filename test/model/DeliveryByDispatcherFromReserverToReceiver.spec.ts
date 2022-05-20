@@ -31,24 +31,24 @@ describe('Package Delivery Step | Delivery By Dispatcher From Reserver to Receiv
         expect(shipment.currentHolder.id).to.equal(deliveryStep1.dispatcher.id);
     })
     
-    it('SenderCantBeDispatcher', async () => {
-        var user_test = user(1, 1, 1, 1);
-        const deliveryStep = delivery_step(DeliveryStepType.DeliveryByDispatcherFromSenderToReceiver, user_fault(FaultType.ReceiverAsReserver))
-        var shipment = Shipment.create(new Package(PackageType.NonPerishable), user_test.sender, user_test.receiver);
-        expect((await shipment.addReserver(user_test.reserver)).ok).to.equal(true);
-        expect((await shipment.addDeliveryStep(deliveryStep)).val).to.equal("DeliveryStepInitialized");
-        user(1, 1, 1, 2);
-        const deliveryStep1 = delivery_step(DeliveryStepType.DeliveryByDispatcherFromReserverToReceiver, user_fault(FaultType.SenderAsReserver))
-        expect((await shipment.addDeliveryStep(deliveryStep1)).val).to.equal("SenderCantBeDispatcher");
+    // it('SenderCantBeDispatcher', async () => {
+    //     var user_test = user(1, 1, 1, 1);
+    //     const deliveryStep = delivery_step(DeliveryStepType.DeliveryByDispatcherFromSenderToReceiver, user_fault(FaultType.ReceiverAsReserver))
+    //     var shipment = Shipment.create(new Package(PackageType.NonPerishable), user_test.sender, user_test.receiver);
+    //     expect((await shipment.addReserver(user_test.reserver)).ok).to.equal(true);
+    //     expect((await shipment.addDeliveryStep(deliveryStep)).val).to.equal("DeliveryStepInitialized");
+    //     user(1, 1, 1, 2);
+    //     const deliveryStep1 = delivery_step(DeliveryStepType.DeliveryByDispatcherFromReserverToReceiver, user_fault(FaultType.SenderAsReserver))
+    //     expect((await shipment.addDeliveryStep(deliveryStep1)).val).to.equal("SenderCantBeDispatcher");
         
         
-        console.log(user_test)
-        console.log(shipment.currentHolder)
-        shipment.pickup(deliveryStep)
-        shipment.deliver(deliveryStep)
-        console.log(shipment.currentHolder)
-        expect(shipment.currentHolder.id).to.equal(user_test.reserver.id)
-    }) 
+    //     console.log(user_test)
+    //     console.log(shipment.currentHolder)
+    //     shipment.pickup(deliveryStep)
+    //     shipment.deliver(deliveryStep)
+    //     console.log(shipment.currentHolder)
+    //     expect(shipment.currentHolder.id).to.equal(user_test.reserver.id)
+    // }) 
 });
     
 describe('Package Delivery Step | Delivery By Dispatcher From Reserver to Receiver | deliver()', () => {
