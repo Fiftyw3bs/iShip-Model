@@ -36,7 +36,11 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
+    "ipfs": "^0.62.3",
+    "ipfs-http-client": "^56.0.3",
     "localized-strings": "^0.2.4",
+    "orbit-db": "^0.28.6",
     "typesafe-i18n": "^5.4.3"
   }
 }

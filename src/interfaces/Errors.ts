@@ -20,6 +20,7 @@ type Errors = "InitError"
             | "InvalidSender"
             | "InvalidRecipient"
             | "UserNotCurrentHolder"
+            | "InvalidDbType"
             
 type OkMessage = "ReserverAdded"
             | "ReserverRemoved"
@@ -33,5 +34,6 @@ type OkMessage = "ReserverAdded"
             | "PackagePickedUp"
             | "PackageDelivered"
             | "PackageDispatched"
+            | "DbCreated"
 
 export {Errors, Err, Ok, Result, OkMessage};

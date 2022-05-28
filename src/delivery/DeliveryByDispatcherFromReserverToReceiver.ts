@@ -36,10 +36,10 @@ class DeliveryByDispatcherFromReserverToReceiver implements IDeliveryStep {
         if (this.recipient.id != shipment.receiver.id) {
             return Err("InvalidRecipient");
         }
-        if (shipment.reservers.length > 0) {
+        if (shipment.addedReservers > 0) {
             // Ensure it's the last `Reserver` in the delivery sequence
             const index = shipment.reservers.map(e => { return e.id }).indexOf(this.source.id);
-            if (index != (shipment.reservers.length-1)) {
+            if (index != (shipment.addedReservers-1)) {
                 return Err("WrongStepInDeliverySequence");
             }
         } else {

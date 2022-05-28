@@ -6,6 +6,13 @@ class Sender extends LoggedInUser {
         super(id)
     }
 
+    public toJSON() {
+        return {
+            availability: JSON.stringify(this.available),
+            id: JSON.stringify(this.id)
+        }
+    }
+
     shipmentHistory:    ShipmentHistory = new ShipmentHistory();
 }
 

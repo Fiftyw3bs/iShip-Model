@@ -15,10 +15,10 @@ export enum Priority {
 }
 
 export enum ShipmentState {
-    AWAITING_PICKUP,
-    IN_TRANSIT,
-    DELIVERED,
-    CANCELLED
+    AWAITING_PICKUP = "Awaiting Pickup",
+    IN_TRANSIT = "In Transit",
+    DELIVERED = "Delivered",
+    CANCELLED = "Cancelled"
 }
 
 class Shipment {
@@ -53,7 +53,7 @@ class Shipment {
                 resolve(step.init(this).andThen(
                     (e) => {
                         step.dispatchState = DispatchState.ACCEPTED;
-                        this._deliverySteps.push(step);
+                        this._deliverySteps[this._addedDeliverySteps++] = step;
                         return Ok(e);
                     }
                 ));
@@ -70,7 +70,7 @@ class Shipment {
                 if (this.reservers.includes(reserver, 0)) {
                     reject(Err("ReserverAlreadySelected"))
                 }
-                this.reservers.push(reserver);
+                this.reservers[this._addedReservers++] = reserver;
                 resolve(Ok("ReserverAdded"));
             }
         );
@@ -82,6 +82,7 @@ class Shipment {
                 const index = this.reservers.map(e => { return e.id }).indexOf(reserver.id);
                 if (index > -1) {
                     this.reservers.splice(index, 1);
+                    this._addedReservers--;
                     resolve(Ok("ReserverRemoved"));
                 } else {
                     reject(Err("ReserverNotFound"));
@@ -153,44 +154,118 @@ class Shipment {
     public get sender(): Sender {
         return this._sender;
     }
-    
-    public get currentHolder() : LoggedInUser {
+
+    public get currentHolder(): LoggedInUser {
         return this._currentHolder;
     }
-    
-    public get creationTime() : Date {
+
+    public get creationTime(): Date {
         return this._creationTime;
     }
-    
-    public get state() : ShipmentState {
+
+    public get state(): ShipmentState {
         return this._state;
     }
-    
-    public get receiver() : Receiver {
+
+    public get receiver(): Receiver {
         return this._receiver;
     }
-    
-    public get reservers() : Array<Reserver> {
+
+    public get reservers(): Array<Reserver> {
         return this._reservers;
     }
-    
-    public get id() : string {
+
+    public get id(): string {
         return this._id;
     }
 
-    public get dispatchers() : Array<Dispatcher> {
-        return this._deliverySteps.map(e => {return e.dispatcher as Dispatcher})
+    public get addedReservers(): number {
+        return this._addedReservers;
     }
-    
+
+    public get addedDeliverySteps(): number {
+        return this._addedDeliverySteps;
+    }
+
+    public get dispatchers(): Array<Dispatcher> {
+        return this._deliverySteps.map(e => { return e.dispatcher as Dispatcher })
+    }
+
+    /**
+     * toJSON
+     */
+    public toJSON() {
+        return JSON.stringify({
+            content: this._content,
+            deliverySteps: this._deliverySteps,
+            reservers: this._reservers,
+            sender: this._sender,
+            _id: this._id,
+            currentHolder: this.currentHolder,
+            receiver: this.receiver,
+            state: this._state,
+            creationTime: this.creationTime
+        }, null, 4)
+    }
+
+    /**
+     * static deserialize
+     */
+    public static deserialize(shipment: {
+        content: string;
+        deliverySteps: string;
+        reservers: string;
+        sender: string;
+        _id: string;
+        currentHolder: string;
+        receiver: string;
+        state: string;
+        creationTime: string;
+    }): Shipment {
+        const _content = JSON.parse(shipment.content);
+        const _deliverySteps = JSON.parse(shipment.deliverySteps);
+        const _reservers = JSON.parse(shipment.reservers);
+        const _sender = JSON.parse(shipment.sender);
+        const _id = JSON.parse(shipment._id);
+        const _currentHolder = JSON.parse(shipment.currentHolder);
+        const _receiver = JSON.parse(shipment.receiver);
+        const _state = JSON.parse(shipment.state);
+        const _creationTime = JSON.parse(shipment.creationTime);
+
+        const sender = new Sender(_sender.id);
+        const receiver = new Receiver(_receiver.id);
+
+        const val = new Shipment(
+            _content as Package,
+            sender as Sender,
+            receiver as Receiver
+        )
+
+        val._currentHolder = _currentHolder
+        val._creationTime = _creationTime
+        val._content = _content
+        val._id = _id
+        val._state = _state
+        _reservers.forEach((reserver: Reserver) => val._reservers.push(Object.assign({}, reserver)))
+        _deliverySteps.forEach((deliveryStep: IDeliveryStep) => val._deliverySteps.push(Object.assign({}, deliveryStep)))
+
+        return val;
+    }
+
     private _content: Package;
-    private _deliverySteps: Array<IDeliveryStep> = new Array<IDeliveryStep>();
-    private _reservers: Array<Reserver> = new Array<Reserver>();
+    private _deliverySteps: Array<IDeliveryStep> = new Array<IDeliveryStep>(7);
+    private _reservers: Array<Reserver> = new Array<Reserver>(5);
     private _sender: Sender;
     private _id: string;
     private _currentHolder: LoggedInUser;
     private _receiver: Receiver;
     private _state: ShipmentState;
     private _creationTime: Date;
+
+    private _addedDeliverySteps = 0;
+    private _addedReservers = 0;
 }
 
-export default Shipment;
+declare module "shipment" {
+    export { Shipment, PackageType };
+}

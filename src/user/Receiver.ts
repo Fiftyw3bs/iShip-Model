@@ -6,6 +6,14 @@ class Receiver extends LoggedInUser {
         super(id)
     }
 
+    public toJSON() {
+        return { 
+            location: JSON.stringify(this.location),
+            availability: JSON.stringify(this.available),
+            id: JSON.stringify(this.id)
+        }
+    }
+
     location: Address = new Address();
 }
 

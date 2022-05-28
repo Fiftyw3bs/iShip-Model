@@ -16,7 +16,7 @@ class LoggedInUser {
     public get id() : string {
         return this._id;
     }
-    
+
     available:          Availability = new Availability();
     private _id:                 string;
 }

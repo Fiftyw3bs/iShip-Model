@@ -35,6 +35,20 @@ class Reserver extends LoggedInUser {
     async rejectReserveRequest(request: ReserveRequest) {
         return await request.reject(this);
     }
+
+    /**
+     * toJSON
+     */
+    public toJSON() {
+        return {
+            costPerHour: JSON.stringify(this.costPerHour),
+            packageType: JSON.stringify(this.packageType),
+            location: JSON.stringify(this.location),
+            reserveRequests: JSON.stringify(this.reserveRequests),
+            availability: JSON.stringify(this.available),
+            id: JSON.stringify(this.id)
+        }
+    }
     
     costPerHour:        Cost = {currency: 'EUR', amount: 100};
     packageType:        PackageType = PackageType.All;

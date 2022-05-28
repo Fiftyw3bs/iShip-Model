@@ -45,7 +45,7 @@ describe('Test package reservation', () => {
         var reserveRequest = new ReserveRequest(shipment, reserver);
         const ret = await reserveRequest.reject(reserver);
         expect(ret.val).to.equal("ReserveRequestRejected");
-        expect(shipment.reservers.length).to.equal(2);
+        expect(shipment.addedReservers).to.equal(2);
     })
 
     it('should not be able to reject reserve request [reserver is not selected by sender]', async () => {

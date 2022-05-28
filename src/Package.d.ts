@@ -1,8 +1,8 @@
 
 enum PackageType {
-    Perishable = 1,
-    NonPerishable,
-    All
+    Perishable = "Perishable",
+    NonPerishable = "NonPerishable",
+    All = "All"
 }
 
 interface PackageSize {
@@ -11,7 +11,7 @@ interface PackageSize {
     height: number
 }
 
-class Package {
+export class Package {
     constructor(type: PackageType, size: PackageSize = { length: 0, height: 0, width: 0 }) {
         this._type = type;
         this._size = size;
@@ -32,9 +32,24 @@ class Package {
     public get images(): Array<string> {
         return this._images;
     }
+
+    /**
+     * toJSON
+     */
+    public toJSON() {
+        return {
+            type: JSON.stringify(this._type),
+            images: JSON.stringify(this._images),
+            size: JSON.stringify(this._size)
+        }
+    }
+    
     private _type: PackageType
     private _images: Array<string> = new Array<string>();
     private _size: PackageSize;
 }
 
-export { Package, PackageType };
+
+declare module "Package" {
+    export { Package, PackageType };
+}

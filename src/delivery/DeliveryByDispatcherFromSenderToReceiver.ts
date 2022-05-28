@@ -36,7 +36,7 @@ class DeliveryByDispatcherFromSenderToReceiver implements IDeliveryStep {
         if (this.recipient.id != shipment.receiver.id) {
             return Err("InvalidRecipient");
         }
-        if (shipment.reservers.length > 0) { // Must be confirmed from user
+        if (shipment.addedReservers > 0) { // Must be confirmed from user
             shipment.reservers.splice(0, shipment.reservers.length);
         }
         return Ok("DeliveryStepInitialized");

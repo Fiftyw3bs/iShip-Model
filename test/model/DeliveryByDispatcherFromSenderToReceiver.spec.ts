@@ -14,7 +14,7 @@ describe('Package Delivery Step | DeliveryByDispatcherFromSenderToReceiver', () 
         var shipment = Shipment.create(new Package(PackageType.NonPerishable), user_test.sender, user_test.receiver);
         const deliveryStep = delivery_step(DeliveryStepType.DeliveryByDispatcherFromSenderToReceiver)
         expect((await shipment.addReserver(user_test.reserver)).ok).to.equal(true);
-        expect(shipment.reservers.length).to.equal(1);
+        expect(shipment.addedReservers).to.equal(1);
         
         expect((await shipment.addDeliveryStep(deliveryStep)).val).to.equal("DeliveryStepInitialized");
         expect(shipment.reservers.length).to.equal(0);

@@ -17,7 +17,7 @@ describe('Delivery Request', () => {
 
         expect((await deliverRequest.accept(user_test.sender)).val).to.equal("DeliveryRequestAccepted")
         expect(deliverRequest.state).to.equal(DeliveryRequestState.APPROVED)
-        expect(shipment.dispatchers.length).to.equal(1);
+        expect(shipment.addedDeliverySteps).to.equal(1);
     })
     
     it('should return true (rejected successfully)', async () => {
