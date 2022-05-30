@@ -5,14 +5,14 @@ import Sender from "../src/user/Sender";
 import { v4 as gen_id } from "uuid";
 import { gen } from "./model/reserve.spec";
 import Address from "../src/Location";
-import { Availability, DateFormat } from "../src/Availability";
-import { IDeliveryStep } from "../src/interfaces/IDeliveryStep";
+import { Availability, DateFormat } from "../src/context/availabilityContext";
+import { IDeliveryStep } from "../src/DeliveryStep";
 import LoggedInUser from "../src/user/User";
 import DeliveryByDispatcherFromReserverToReceiver from "../src/delivery/DeliveryByDispatcherFromReserverToReceiver";
 import DeliveryByDispatcherFromReserverToReserver from "../src/delivery/DeliveryByDispatcherFromReserverToReserver";
 import DeliveryByDispatcherFromSenderToReceiver from "../src/delivery/DeliveryByDispatcherFromSenderToReceiver";
 import DeliveryByDispatcherFromSenderToReserver from "../src/delivery/DeliveryByDispatcherFromSenderToReserver";
-import SelfDeliveryBySenderToReserver from "../src/delivery/SelfDeliveryBySenderToReserver";
+import SelfDeliveryBySenderToReserver from "../src/context/SelfDeliveryBySenderToReserver";
 
 interface UserIndex {
     sender_index: number,

@@ -1,5 +1,5 @@
-import DeliveryRequest from "../DeliveryRequest";
-import { IDeliveryStep } from "../interfaces/IDeliveryStep";
+import DeliveryRequest from "../context/deliveryRequestContext";
+import { IDeliveryStep } from "../DeliveryStep";
 import Cost from "../interfaces/Cost";
 import Shipment from "../Shipment";
 import LoggedInUser from "./User";

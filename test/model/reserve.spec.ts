@@ -1,10 +1,10 @@
-import { Availability, DateFormat } from "../../src/Availability";
+import { Availability, DateFormat } from "../../src/context/availabilityContext";
 // import { expect } from "chai";
 import 'mocha';
 import Reserver from "../../src/user/Reserver";
 import Sender from "../../src/user/Sender";
 import { Package, PackageType } from "../../src/Package";
-import ReserveRequest from "../../src/ReserveRequest";
+import ReserveRequest from "../../src/context/reserveRequestContext";
 import Address from "../../src/Location";
 import Receiver from "../../src/user/Receiver";
 import Shipment from "../../src/Shipment";

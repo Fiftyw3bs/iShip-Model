@@ -1,8 +1,8 @@
 import LoggedInUser from "./User";
 import {PackageType} from "../Package"
-import ReserveRequest from "../ReserveRequest";
+import ReserveRequest from "../context/reserveRequestContext";
 import Cost from "../interfaces/Cost";
-import { Availability } from "../Availability";
+import { Availability } from "../context/availabilityContext";
 import Address from "../Location";
 
 type Hour = number;

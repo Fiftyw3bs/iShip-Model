@@ -2,7 +2,7 @@ import 'mocha';
 import { Package, PackageType } from "../../src/Package";
 import Shipment, { ShipmentState } from "../../src/Shipment";
 import { DeliveryStepType, delivery_step, FaultType, user, user_fault } from "../helper.test";
-import { DispatchState } from "../../src/interfaces/IDeliveryStep";
+import { DispatchState } from "../../src/DeliveryStep";
 import { Err, Ok } from '../../src/interfaces/Errors';
 let chai = require('chai').use(require('chai-as-promised'))
 let expect = chai.expect

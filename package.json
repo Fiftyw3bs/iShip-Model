@@ -10,7 +10,8 @@
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts",
     "coverage": "nyc mocha -r ts-node/register test/**/*.spec.ts",
-    "typesafe-i18n": "typesafe-i18n"
+    "typesafe-i18n": "typesafe-i18n",
+    "magic": "webpack"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,8 @@
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^17.0.33",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
@@ -29,6 +32,8 @@
     "moment": "^2.29.3",
     "nodemon": "^2.0.16",
     "nyc": "^15.1.0",
+    "react-hook-form": "^7.31.3",
+    "react-test-renderer": "^18.1.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "ts-results": "^3.3.0",
@@ -37,6 +42,11 @@
   },
   "dependencies": {
     "localized-strings": "^0.2.4",
-    "typesafe-i18n": "^5.4.3"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "ts-loader": "^9.3.0",
+    "typesafe-i18n": "^5.4.3",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   }
 }

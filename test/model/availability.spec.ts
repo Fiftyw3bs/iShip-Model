@@ -1,4 +1,4 @@
-import {Availability, DateFormat} from "../../src/Availability";
+import {Availability, DateFormat} from "../../src/context/availabilityContext";
 import { expect } from "chai";
 import 'mocha';
 

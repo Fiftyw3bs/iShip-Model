@@ -1,4 +1,4 @@
-import { Availability } from "../Availability"
+import { Availability } from "../context/availabilityContext"
 
 class LoggedInUser {
     constructor(id: string) {
