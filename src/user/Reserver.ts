@@ -1,15 +1,15 @@
-import LoggedInUser from "./User";
+import RegisteredUser from "./User";
 import {PackageType} from "../Package"
-import ReserveRequest from "../context/reserveRequestContext";
 import Cost from "../interfaces/Cost";
-import { Availability } from "../context/availabilityContext";
 import Address from "../Location";
+import { IAvailability } from "../@types/availability";
+import { IReserveRequest } from "../@types/reserveRequest";
 
 type Hour = number;
 
-class Reserver extends LoggedInUser {
+class Reserver extends RegisteredUser {
 
-    constructor(id: string, costPerHour: Cost, location: Address, availability: Availability) 
+    constructor(id: string, costPerHour: Cost, location: Address, availability: IAvailability) 
     {
         super(id)
         this.costPerHour = costPerHour;
@@ -32,14 +32,14 @@ class Reserver extends LoggedInUser {
         }
     }
 
-    async rejectReserveRequest(request: ReserveRequest) {
+    async rejectReserveRequest(request: IReserveRequest) {
         return await request.reject(this);
     }
     
     costPerHour:        Cost = {currency: 'EUR', amount: 100};
     packageType:        PackageType = PackageType.All;
     location:           Address;
-    reserveRequests:    Array<ReserveRequest> = new Array<ReserveRequest>();
+    reserveRequests:    Array<IReserveRequest> = new Array<IReserveRequest>();
 }
 
 export default Reserver

@@ -1,15 +1,15 @@
-import { Availability } from "../context/availabilityContext"
+import { DateFormat, defaultAvailability, IAvailability } from "../@types/availability";
 
-class LoggedInUser {
+class RegisteredUser {
     constructor(id: string) {
         this._id = id
     }
 
-    public set availability(v : Availability) {
+    public set availability(v : IAvailability) {
         this.available = v;
     }
     
-    public get availability() : Availability {
+    public get availability() : IAvailability {
         return this.available;
     }
 
@@ -17,8 +17,8 @@ class LoggedInUser {
         return this._id;
     }
     
-    available:          Availability = new Availability();
-    private _id:                 string;
+    available:          IAvailability = defaultAvailability;
+    private _id:        string;
 }
 
-export default LoggedInUser
+export default RegisteredUser

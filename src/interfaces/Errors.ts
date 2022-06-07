@@ -20,6 +20,7 @@ type Errors = "InitError"
             | "InvalidSender"
             | "InvalidRecipient"
             | "UserNotCurrentHolder"
+            | "ShipmentNotFound"
             
 type OkMessage = "ReserverAdded"
             | "ReserverRemoved"

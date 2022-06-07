@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { createContext, useState } from 'react';
-import { IAvailability, defaultAvailability, AvailabilityContextType } from '../@types/availability';
+import { IAvailability, defaultAvailability, AvailabilityContextType, AvailabilityPeriod } from '../@types/availability';
 
 export const AvailabilityContext = createContext<AvailabilityContextType | null>(null)
 
@@ -9,15 +9,16 @@ export const Availability: React.FC<React.ReactNode> = ({children}) => {
     const [availabilityInfo, setAvailabilityInfo] = useState<IAvailability>(defaultAvailability)
 
 
-    const setAvailability = (day: string, start: string, end: string) => {
-        if (availabilityInfo.times.has(day.toLowerCase())) {
-            availabilityInfo.times.get(day.toLowerCase())?.set(start, end)
+    const setAvailability = (availability: AvailabilityPeriod) => {
+        if (availabilityInfo.times.has(availability.day.toLowerCase())) {
+            availabilityInfo.times.get(availability.day.toLowerCase())?.set(availability.from, availability.to)
         } else {
-            availabilityInfo.times.set(day.toLowerCase(), new Map<string, string>().set(start, end))
+            availabilityInfo.times.set(availability.day.toLowerCase(), new Map<string, string>().set(availability.from, availability.to))
         }
         setAvailabilityInfo((prevState) => {
+            availabilityInfo.times.get(availability.day.toLowerCase())?.set(availability.from, availability.to);
             return {
-                ...prevState, times: availabilityInfo.times.get(day.toLowerCase())?.set(start, end)
+                ...prevState, times: availabilityInfo.times
             }
         })
     }

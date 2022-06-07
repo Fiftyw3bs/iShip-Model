@@ -1,7 +1,7 @@
 import ShipmentHistory from "../ShipmentHistory";
-import LoggedInUser from "./User";
+import RegisteredUser from "./User";
 
-class Sender extends LoggedInUser {
+class Sender extends RegisteredUser {
     constructor(id: string) {
         super(id)
     }

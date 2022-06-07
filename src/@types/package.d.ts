@@ -11,7 +11,7 @@ interface PackageSize {
     height: number
 }
 
-export interface PackageInfo {
+export interface IPackage {
     description: string;
     type: PackageType;
     image: string;

@@ -13,7 +13,7 @@ interface PackageSize {
     height: number
 }
 
-export interface PackageInfo {
+export interface IPackage {
     description: string;
     type: PackageType;
     image: string;
@@ -31,10 +31,10 @@ export const PackageContext = createContext({packageInfo: defaultPackageInfo});
 
 function Package() {
 
-    const { register, handleSubmit } = useForm<PackageInfo>();
-    const [packageInfo, setPackageInfo] = useState<PackageInfo>(defaultPackageInfo);
+    const { register, handleSubmit } = useForm<IPackage>();
+    const [packageInfo, setPackageInfo] = useState<IPackage>(defaultPackageInfo);
 
-    const setData = (data: PackageInfo) => {
+    const setData = (data: IPackage) => {
         setPackageInfo({
             description: data.description,
             type: data.type,

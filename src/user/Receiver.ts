@@ -1,7 +1,7 @@
-import LoggedInUser from "./User";
+import RegisteredUser from "./User";
 import Address from "../Location";
 
-class Receiver extends LoggedInUser {
+class Receiver extends RegisteredUser {
     constructor(id = 'UNASSIGNED') {
         super(id)
     }

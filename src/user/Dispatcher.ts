@@ -2,7 +2,7 @@ import DeliveryRequest from "../context/deliveryRequestContext";
 import { IDeliveryStep } from "../DeliveryStep";
 import Cost from "../interfaces/Cost";
 import Shipment from "../Shipment";
-import LoggedInUser from "./User";
+import RegisteredUser from "./User";
 
 enum VehicleType {
     Bike = 1,
@@ -10,7 +10,7 @@ enum VehicleType {
     Bus
 }
 
-class Dispatcher extends LoggedInUser {
+class Dispatcher extends RegisteredUser {
     constructor(id: string) {
         super(id)
     }

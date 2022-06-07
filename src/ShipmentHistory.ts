@@ -1,12 +1,12 @@
-import Shipment from "./Shipment";
+import { IShipment } from "./@types/shipment";
 
 class ShipmentHistory {
     
-    update(shipment: Shipment) {
+    update(shipment: IShipment) {
         this.history.push(shipment);
     }
 
-    private history: Array<Shipment> = new Array<Shipment>();
+    private history: Array<IShipment> = new Array<IShipment>();
 }
 
 export default ShipmentHistory

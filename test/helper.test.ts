@@ -7,7 +7,7 @@ import { gen } from "./model/reserve.spec";
 import Address from "../src/Location";
 import { Availability, DateFormat } from "../src/context/availabilityContext";
 import { IDeliveryStep } from "../src/DeliveryStep";
-import LoggedInUser from "../src/user/User";
+import RegisteredUser from "../src/user/User";
 import DeliveryByDispatcherFromReserverToReceiver from "../src/delivery/DeliveryByDispatcherFromReserverToReceiver";
 import DeliveryByDispatcherFromReserverToReserver from "../src/delivery/DeliveryByDispatcherFromReserverToReserver";
 import DeliveryByDispatcherFromSenderToReceiver from "../src/delivery/DeliveryByDispatcherFromSenderToReceiver";
@@ -28,9 +28,9 @@ interface TestUser {
     dispatcher: Dispatcher,
 }
 interface TestDispatchStep {
-    source: LoggedInUser,
-    receiver: LoggedInUser,
-    dispatcher: LoggedInUser,
+    source: RegisteredUser,
+    receiver: RegisteredUser,
+    dispatcher: RegisteredUser,
 }
 
 export enum FaultType {

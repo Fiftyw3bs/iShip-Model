@@ -6,17 +6,18 @@ export enum DeliveryRequestState {
 }
 
 export interface IDeliveryRequest {
-    shipment: IShipment;
+    shipmentId: string;
     state: DeliveryRequestState
     step: IDeliveryStep;
     cost: Cost;
+    id: string;
 }
 
 export type DeliveryRequestContextType = {
-    deliveryRequestInfo: IDeliveryRequest;
+    deliveryRequestInfo: IDeliveryRequest[];
     saveDeliveryRequestInfo(data: IDeliveryRequest);
-    accept(sender: Sender): Promise<Result<OkMessage, Errors>>;
-    reject(sender: Sender): Promise<Result<OkMessage, Errors>>;
+    accept(request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>>;
+    reject(request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>>;
 }
 
 export const defaultDeliveryRequest = {

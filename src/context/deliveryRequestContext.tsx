@@ -2,61 +2,86 @@ import Sender from "../user/Sender";
 import { Err, Errors, Ok, OkMessage, Result } from "../interfaces/Errors";
 import { createContext, useContext, useState } from "react";
 import React from "react";
-import { defaultDeliveryRequest, DeliveryRequestContextType, DeliveryRequestState, IDeliveryRequest } from "../@types/deliveryRequest";
+import { DeliveryRequestContextType, DeliveryRequestState, IDeliveryRequest } from "../@types/deliveryRequest";
 import { ShipmentContext } from "./shipmentContext";
-import { ShipmentContextType } from "../@types/shipment";
+import { IShipment, ShipmentContextType } from "../@types/shipment";
+import { v4 } from "uuid";
 
 export const DeliveryRequestContext = createContext<DeliveryRequestContextType | null>(null)
 
 export const DeliveryRequestProvider: React.FC<React.ReactNode> = ({ children }) => {
 
-    const [deliveryRequestInfo, setDeliveryRequestInfo] = useState<IDeliveryRequest>(defaultDeliveryRequest);
+    const [deliveryRequestInfo, setDeliveryRequestInfo] = useState<IDeliveryRequest[]>([]);
 
     const { addDeliveryStep } = useContext(ShipmentContext) as ShipmentContextType;
 
     const saveDeliveryRequestInfo = (data: IDeliveryRequest) => {
-        setDeliveryRequestInfo({
-            cost: data.cost,
-            shipment: data.shipment,
-            state: data.state,
-            step: data.step
-        })
+        setDeliveryRequestInfo((prevState) => [
+            ...prevState,
+            {
+                cost: data.cost,
+                shipmentId: data.shipmentId,
+                state: data.state,
+                step: data.step,
+                id: data.id ? data.id : v4()
+            }
+        ])
     }
 
-    const accept = async (sender: Sender): Promise<Result<OkMessage, Errors>> => {
-        if (sender.id == deliveryRequestInfo.shipment.sender.id) {
-            return await addDeliveryStep(deliveryRequestInfo.step).then(
-                e => e.andThen(
-                    () => {
-                        setDeliveryRequestInfo((prevData) => {
-                            return {...prevData, state: DeliveryRequestState.APPROVED}
-                        })
-                        return Ok("DeliveryRequestAccepted");
+    const accept = async (request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>> => {
+        return await useContext(ShipmentContext)?.getShipmentById(request.shipmentId).then(
+            async (value: Result<IShipment, Errors>) => {
+                if (value.ok) {
+                    const shipment = value.val
+                    if (sender.id == shipment.sender.id) {
+                        return await addDeliveryStep(request.step).then(
+                            e => e.andThen(
+                                () => {
+                                    setDeliveryRequestInfo((prevData) => {
+                                        return { ...prevData, state: DeliveryRequestState.APPROVED }
+                                    })
+                                    return Ok("DeliveryRequestAccepted");
+                                }
+                            )
+                        )
+                    } else {
+                        return Err("InvalidUser");
                     }
-                )
-            )
-        } else {
-            return Promise.reject(Err("InvalidUser"));
-        }
+                }
+            },
+            (error) => {
+                return error;
+            }
+        )
     }
 
-    const reject = (sender: Sender): Promise<Result<OkMessage, Errors>> => {
-        if (deliveryRequestInfo.shipment.sender.id == sender.id) {
-            return new Promise<Result<OkMessage, Errors>>(
-                (resolve) => {
-                    setDeliveryRequestInfo((prevData) => {
-                        return {...prevData, state: DeliveryRequestState.REJECTED}
-                    })
-                    resolve(Ok("DeliveryRequestRejected"))
+    const reject = async (request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>> => {
+        return await useContext(ShipmentContext)?.getShipmentById(request.shipmentId).then(
+            async (value: Result<IShipment, Errors>) => {
+                if (value.ok) {
+                    const shipment = value.val
+                    if (shipment.sender.id == sender.id) {
+                        return new Promise<Result<OkMessage, Errors>>(
+                            (resolve) => {
+                                setDeliveryRequestInfo((prevData) => {
+                                    return { ...prevData, state: DeliveryRequestState.REJECTED }
+                                })
+                                resolve(Ok("DeliveryRequestRejected"))
+                            }
+                        )
+                    } else {
+                        return Promise.reject(Err("InvalidUser"));
+                    }
                 }
-            )
-        } else {
-            return Promise.reject(Err("InvalidUser"));
-        }
+            },
+            (error) => {
+                return error;
+            }
+        )
     }
 
     return (
-        <DeliveryRequestContext.Provider value={{deliveryRequestInfo, saveDeliveryRequestInfo, accept, reject}}>
+        <DeliveryRequestContext.Provider value={{ deliveryRequestInfo, saveDeliveryRequestInfo, accept, reject }}>
             {children}
         </DeliveryRequestContext.Provider>
     )

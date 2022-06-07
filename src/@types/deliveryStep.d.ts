@@ -1,3 +1,4 @@
+import RegisteredUser from "../user/User";
 
 enum DispatchState {
     PENDING = 0,
@@ -8,30 +9,34 @@ enum DispatchState {
 
 interface IDeliveryStep {
     id:                             string;
-    dispatcher:                     LoggedInUser;
-    source:                         LoggedInUser;
-    recipient:                      LoggedInUser;
+    shipmentId:                     string;
+    dispatcher:                     RegisteredUser;
+    source:                         RegisteredUser;
+    recipient:                      RegisteredUser;
     completionTime:                 Date;
     dispatchState:                  DispatchState;
-    stepValidator:                  (n: IShipment) => Result<OkMessage, Errors>;
 }
 
 export type DeliveryStepContextType = {
-    deliveryStepInfo: IDeliveryStep;
-    saveDeliveryStepInfo(data: IDeliveryStep);
-    selfDeliveryBySenderToReserver(shipment: IShipment):   Result<OkMessage, Errors>;
-    deliveryByDispatcherFromReserverToReceiver(shipment: IShipment):   Result<OkMessage, Errors>;
-    deliveryByDispatcherFromReserverToReserver(shipment: IShipment):   Result<OkMessage, Errors>;
-    deliveryByDispatcherFromSenderToReceiver(shipment: IShipment):   Result<OkMessage, Errors>;
-    deliveryByDispatcherFromSenderToReserver(shipment: IShipment):   Result<OkMessage, Errors>;
+    deliveryStepInfo: IDeliveryStep[];
+    updateState(data: IDeliveryStep, newState: DispatchState): Promise<void>;
+    getState(data: IDeliveryStep): Promise<Result<DispatchState, Errors>>;
+    addDeliveryStep(data: IDeliveryStep);
+    getByShipmentId(shipmentId: string): Promise<Result<IDeliveryStep, Errors>>;
+    getByDispatcher(dispatcher: Dispatcher): Promise<Result<IDeliveryStep[], Errors>>;
+    getByRecipient(recipient: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>>;
+    getBySource(source: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>>;
+    getByState(state: DispatchState): Promise<Result<IDeliveryStep[], Errors>>;
 }
 
-export const defaultDeliveryStep = {
-    source:         new LoggedInUser(""),
-    recipient:      new LoggedInUser(""),
+export type DeliveryStep = DeliveryStepContextType;
+
+export const defaultDeliveryStep: IDeliveryStep = {
+    source:         new RegisteredUser(""),
+    recipient:      new RegisteredUser(""),
     completionTime: new Date(),
     dispatchState:  DispatchState.PENDING,
     id:             v4(),
-    dispatcher:     new LoggedInUser(""),
-    stepValidator:  deliveryByDispatcherFromSenderToReceiver
+    dispatcher:     new RegisteredUser(""),
+    shipmentId:     "UNASSIGNED"
 }

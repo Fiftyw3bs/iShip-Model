@@ -16,7 +16,7 @@ interface IAvailability {
 
 export type AvailabilityContextType = {
     availabilityInfo: IAvailability;
-    setAvailability(day: string, start: string, end: string);
+    setAvailability(availability: AvailabilityPeriod);
     isAvailable(datetime: Date) : boolean;
     availabilityWithinRange(datetime1: Date, datetime2: Date) : boolean;
 }
