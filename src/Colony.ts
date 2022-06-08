@@ -1,4 +1,4 @@
-import Dispatcher from "./user/Dispatcher";
+import Dispatcher from "./context/dispatcherContext";
 import Reserver from "./user/Reserver";
 
 export interface Colony {

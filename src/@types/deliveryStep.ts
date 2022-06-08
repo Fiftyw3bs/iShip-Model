@@ -1,18 +1,20 @@
-import RegisteredUser from "../user/User";
+import { v4 } from "uuid";
+import { Errors, Result } from "../interfaces/Errors";
+import ILoggedInUser, { IDispatcher } from "./user";
 
-enum DispatchState {
+export enum DispatchState {
     PENDING = 0,
     ACCEPTED,
     IN_TRANSIT,
     COMPLETED
 }
 
-interface IDeliveryStep {
+export interface IDeliveryStep {
     id:                             string;
     shipmentId:                     string;
-    dispatcher:                     RegisteredUser;
-    source:                         RegisteredUser;
-    recipient:                      RegisteredUser;
+    dispatcher:                     ILoggedInUser;
+    source:                         ILoggedInUser;
+    recipient:                      ILoggedInUser;
     completionTime:                 Date;
     dispatchState:                  DispatchState;
 }
@@ -21,22 +23,22 @@ export type DeliveryStepContextType = {
     deliveryStepInfo: IDeliveryStep[];
     updateState(data: IDeliveryStep, newState: DispatchState): Promise<void>;
     getState(data: IDeliveryStep): Promise<Result<DispatchState, Errors>>;
-    addDeliveryStep(data: IDeliveryStep);
+    addDeliveryStep(data: IDeliveryStep) : void;
     getByShipmentId(shipmentId: string): Promise<Result<IDeliveryStep, Errors>>;
-    getByDispatcher(dispatcher: Dispatcher): Promise<Result<IDeliveryStep[], Errors>>;
-    getByRecipient(recipient: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>>;
-    getBySource(source: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>>;
+    getByDispatcher(dispatcher: IDispatcher): Promise<Result<IDeliveryStep[], Errors>>;
+    getByRecipient(recipient: ILoggedInUser): Promise<Result<IDeliveryStep[], Errors>>;
+    getBySource(source: ILoggedInUser): Promise<Result<IDeliveryStep[], Errors>>;
     getByState(state: DispatchState): Promise<Result<IDeliveryStep[], Errors>>;
 }
 
 export type DeliveryStep = DeliveryStepContextType;
 
 export const defaultDeliveryStep: IDeliveryStep = {
-    source:         new RegisteredUser(""),
-    recipient:      new RegisteredUser(""),
+    source:         <ILoggedInUser>{},
+    recipient:      <ILoggedInUser>{},
     completionTime: new Date(),
     dispatchState:  DispatchState.PENDING,
     id:             v4(),
-    dispatcher:     new RegisteredUser(""),
+    dispatcher:     <ILoggedInUser>{},
     shipmentId:     "UNASSIGNED"
 }

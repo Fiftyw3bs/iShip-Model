@@ -4,7 +4,7 @@ import { IAvailability, defaultAvailability, AvailabilityContextType, Availabili
 
 export const AvailabilityContext = createContext<AvailabilityContextType | null>(null)
 
-export const Availability: React.FC<React.ReactNode> = ({children}) => {
+export const Availability: React.FC<React.ReactNode> = () => {
 
     const [availabilityInfo, setAvailabilityInfo] = useState<IAvailability>(defaultAvailability)
 
@@ -65,7 +65,6 @@ export const Availability: React.FC<React.ReactNode> = ({children}) => {
 
     return (
         <AvailabilityContext.Provider value={{availabilityInfo,setAvailability,isAvailable,availabilityWithinRange}}>
-            {children}
         </AvailabilityContext.Provider>
     )
 }

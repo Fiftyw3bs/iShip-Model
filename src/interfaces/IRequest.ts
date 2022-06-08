@@ -1,9 +1,9 @@
-import RegisteredUser from "../user/User";
+import ILoggedInUser from "../@types/user";
 import { Errors, OkMessage, Result } from "./Errors";
 
 interface IRequest {
-    accept(accepter: RegisteredUser): Result<OkMessage, Errors>;
-    reject(rejector: RegisteredUser): Result<OkMessage, Errors>;
+    accept(accepter: ILoggedInUser): Result<OkMessage, Errors>;
+    reject(rejector: ILoggedInUser): Result<OkMessage, Errors>;
 }
 
 export default IRequest;

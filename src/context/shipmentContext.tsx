@@ -2,17 +2,14 @@ import { createContext, useContext, useState } from "react";
 import { v4 } from "uuid";
 import { DeliveryStep, DispatchState, IDeliveryStep } from "../@types/deliveryStep";
 import { ShipmentContextType, IShipment, ShipmentState } from "../@types/shipment";
+import { IDispatcher, IReceiver, IReserver, ISender } from "../@types/user";
 import { Err, Errors, Ok, OkMessage, Result } from "../interfaces/Errors";
 import { PackageType } from "../Package";
-import Dispatcher from "../user/Dispatcher";
-import Receiver from "../user/Receiver";
-import Reserver from "../user/Reserver";
-import Sender from "../user/Sender";
 import { DeliveryStepContext } from "./deliveryStepContext";
 
 export const ShipmentContext = createContext<ShipmentContextType | null>(null);
 
-export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.Element => {
+export const ShipmentProvider: React.FC<React.ReactNode> = (): JSX.Element => {
 
     const [shipmentInfo, setShipmentInfo] = useState<IShipment[]>([]);
 
@@ -21,8 +18,8 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
             ...prevState,
             {
                 content: data.content,
-                reservers: data.reservers,
-                sender: data.sender,
+                reserversId: data.reserversId,
+                senderId: data.senderId,
                 id: data.id ? data.id : v4(),
                 currentHolder: data.currentHolder,
                 receiver: data.receiver,
@@ -41,8 +38,8 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
         }
     }
 
-    const getShipmentBySender = (sender: Sender): Promise<Result<IShipment[], Errors>> => {
-        const shipments = shipmentInfo.filter(e => { return e.sender.id == sender.id });
+    const getShipmentBySender = (sender: ISender): Promise<Result<IShipment[], Errors>> => {
+        const shipments = shipmentInfo.filter(e => { return e.senderId == sender.id });
         if (shipments.length < 1) {
             return Promise.reject(Err("ShipmentNotFound"));
         } else {
@@ -57,50 +54,57 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
                 if (index > -1) {
                     reject(Err("ShipmentNotFound"));
                 }
-                resolve(stepValidator(shipmentInfo[index], step).andThen(
+                stepValidator(shipmentInfo[index], step).andThen(
                     (e) => {
                         const tmp_step = step;
                         tmp_step.dispatchState = DispatchState.ACCEPTED
                         deliveryStep?.addDeliveryStep(tmp_step)
+                        resolve(Ok(e));
                         return Ok(e);
                     }
-                ));
+                );
             }
         )
     }
 
+    
+    function instanceOfObj<A>(object: A): object is A {
+        return 'member' in object;
+    }
+
     const stepValidator = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
         if (
-            step.source instanceof Sender &&
-            step.dispatcher instanceof Sender &&
-            step.recipient instanceof Reserver &&
-            shipmentInfo.sender.id == step.source.id
+            instanceOfObj<ISender>(step.source as ISender) &&
+            instanceOfObj<ISender>(step.dispatcher as ISender) &&
+            instanceOfObj<IReserver>(step.recipient as IReserver) &&
+            instanceOfObj<ISender>(step.source as ISender) &&
+            shipmentInfo.senderId == step.source.id
         ) {
             return selfDeliveryBySenderToReserver(shipmentInfo, step);
         } else if (
-            step.source instanceof Reserver &&
-            step.recipient instanceof Receiver &&
-            step.dispatcher instanceof Dispatcher
+            instanceOfObj<IReserver>(step.source as IReserver) &&
+            instanceOfObj<IReceiver>(step.recipient as IReceiver) &&
+            instanceOfObj<IDispatcher>(step.dispatcher as IDispatcher)
         ) {
             return deliveryByDispatcherFromReserverToReceiver(shipmentInfo, step);
         } else if (
-            step.source instanceof Reserver &&
-            step.recipient instanceof Reserver &&
-            step.dispatcher instanceof Dispatcher
+            instanceOfObj<IReserver>(step.source as IReserver) &&
+            instanceOfObj<IReserver>(step.recipient as IReserver) &&
+            instanceOfObj<IDispatcher>(step.dispatcher as IDispatcher)
         ) {
             return deliveryByDispatcherFromReserverToReserver(shipmentInfo, step);
         } else if (
-            step.source instanceof Sender &&
-            step.recipient instanceof Receiver &&
-            step.dispatcher instanceof Dispatcher &&
-            step.source.id == shipmentInfo.sender.id
+            instanceOfObj<ISender>(step.source as ISender) &&
+            instanceOfObj<IReceiver>(step.recipient as IReceiver) &&
+            instanceOfObj<IDispatcher>(step.dispatcher as IDispatcher) &&
+            step.source.id == shipmentInfo.senderId
         ) {
             return deliveryByDispatcherFromSenderToReceiver(shipmentInfo, step);
         } else if (
-            step.source instanceof Sender &&
-            step.recipient instanceof Reserver &&
-            step.dispatcher instanceof Dispatcher &&
-            step.source.id == shipmentInfo.sender.id
+            instanceOfObj<ISender>(step.source as ISender) &&
+            instanceOfObj<IReserver>(step.recipient as IReserver) &&
+            instanceOfObj<IDispatcher>(step.dispatcher as IDispatcher) &&
+            step.source.id == shipmentInfo.senderId
         ) {
             return deliveryByDispatcherFromSenderToReserver(shipmentInfo, step);
         } else {
@@ -108,36 +112,33 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
         }
     }
 
-    const addReserver = (shipmentInfo: IShipment, reserver: Reserver): Promise<Result<OkMessage, Errors>> => {
+    const addReserver = (shipmentInfo: IShipment, reserver: IReserver): Promise<Result<OkMessage, Errors>> => {
         return new Promise<Result<OkMessage, Errors>>(
             (resolve, reject) => {
-                const index = shipmentInfo.reservers.map(e => { return e.id }).indexOf(reserver.id);
+                const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(reserver.id);
                 if (index > -1) {
                     reject(Err("ReserverAlreadySelected"))
                 }
                 if (shipmentInfo.content.type != reserver.packageType && reserver.packageType != PackageType.All) {
                     reject(Err("InvalidReservablePackage"))
                 }
-                if (shipmentInfo.reservers.includes(reserver, 0)) {
-                    reject(Err("ReserverAlreadySelected"))
-                }
                 setShipmentInfo((prevState) => {
-                    return [...prevState, { ...prevState[index], reservers: [...prevState[index].reservers, reserver] }]
+                    return [...prevState, { ...prevState[index], reserversId: [...prevState[index].reserversId, reserver.id] }]
                 })
                 resolve(Ok("ReserverAdded"));
             }
         );
     }
 
-    const removeReserver = (shipmentInfo: IShipment, reserver: Reserver): Promise<Result<OkMessage, Errors>> => {
+    const removeReserver = (shipmentInfo: IShipment, reserverId: string): Promise<Result<OkMessage, Errors>> => {
         return new Promise<Result<OkMessage, Errors>>(
             (resolve, reject) => {
-                const index = shipmentInfo.reservers.map(e => { return e.id }).indexOf(reserver.id);
+                const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(reserverId);
                 if (index > -1) {
                     setShipmentInfo((prevState) => {
-                        const tmp = prevState[index].reservers
+                        const tmp = prevState[index].reserversId
                         tmp.splice(index, 1)
-                        return [...prevState, { ...prevState[index], reservers: tmp }]
+                        return [...prevState, { ...prevState[index], reserversId: tmp }]
                     })
                     resolve(Ok("ReserverRemoved"));
                 } else {
@@ -223,8 +224,8 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
     }
 
     const selfDeliveryBySenderToReserver = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
-        if (step.source.id == shipmentInfo.sender.id) {
-            const index = shipmentInfo.reservers.map(e => { return e.id }).indexOf(step.recipient.id);
+        if (step.source.id == shipmentInfo.senderId) {
+            const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(step.recipient.id);
             if (index > -1) {
                 if (index == 0) { // Ensure the Reserver is the first in the package delivery sequence
                     return Ok("DeliveryStepInitialized");
@@ -240,22 +241,22 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
     }
 
     const deliveryByDispatcherFromReserverToReceiver = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
-        if (step.dispatcher.id == shipmentInfo.sender.id) {
+        if (step.dispatcher.id == shipmentInfo.senderId) {
             return Err("SenderCantBeDispatcher");
         }
         if (step.dispatcher.id == shipmentInfo.receiver.id) {
             return Err("ReceiverCantBeDispatcher");
         }
-        if (step.source.id == shipmentInfo.sender.id) {
+        if (step.source.id == shipmentInfo.senderId) {
             return Err("SenderCantBeReserver");
         }
         if (step.recipient.id != shipmentInfo.receiver.id) {
             return Err("InvalidRecipient");
         }
-        if (shipmentInfo.reservers.length > 0) {
+        if (shipmentInfo.reserversId.length > 0) {
             // Ensure it's the last `Reserver` in the delivery sequence
-            const index = shipmentInfo.reservers.map(e => { return e.id }).indexOf(step.source.id);
-            if (index != (shipmentInfo.reservers.length - 1)) {
+            const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(step.source.id);
+            if (index != (shipmentInfo.reserversId.length - 1)) {
                 return Err("WrongStepInDeliverySequence");
             }
         } else {
@@ -265,7 +266,7 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
     }
 
     const deliveryByDispatcherFromReserverToReserver = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
-        const all_reservers = shipmentInfo.reservers.map(e => { return e.id });
+        const all_reservers = shipmentInfo.reserversId.map(e => { return e });
         const source_index = all_reservers.indexOf(step.source.id);
         const recipient_index = all_reservers.indexOf(step.recipient.id);
         if (source_index == -1) {
@@ -281,22 +282,22 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
     }
 
     const deliveryByDispatcherFromSenderToReceiver = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
-        if (step.dispatcher.id == shipmentInfo.sender.id) {
+        if (step.dispatcher.id == shipmentInfo.senderId) {
             return Err("SenderCantBeDispatcher");
         }
         if (step.dispatcher.id == shipmentInfo.receiver.id) {
             return Err("ReceiverCantBeDispatcher");
         }
-        if (step.source.id != shipmentInfo.sender.id) {
+        if (step.source.id != shipmentInfo.senderId) {
             return Err("InvalidSender");
         }
         if (step.recipient.id != shipmentInfo.receiver.id) {
             return Err("InvalidRecipient");
         }
-        if (shipmentInfo.reservers.length > 0) { // Must be confirmed from user
+        if (shipmentInfo.reserversId.length > 0) { // Must be confirmed from user
             setShipmentInfo((prevState) => {
                 return {
-                    ...prevState, reservers: []
+                    ...prevState, reserversId: []
                 }
             })
         }
@@ -304,17 +305,17 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
     }
 
     const deliveryByDispatcherFromSenderToReserver = (shipmentInfo: IShipment, step: IDeliveryStep): Result<OkMessage, Errors> => {
-        if (step.dispatcher.id == shipmentInfo.sender.id) {
+        if (step.dispatcher.id == shipmentInfo.senderId) {
             return Err("SenderCantBeDispatcher");
         }
         if (step.dispatcher.id == shipmentInfo.receiver.id) {
             return Err("ReceiverCantBeDispatcher");
         }
-        if (step.source.id != shipmentInfo.sender.id) {
+        if (step.source.id != shipmentInfo.senderId) {
             return Err("InvalidSender");
         }
-        if (shipmentInfo.reservers.length > 0) { // Must be confirmed from user
-            const index = shipmentInfo.reservers.map(e => { return e.id }).indexOf(step.recipient.id);
+        if (shipmentInfo.reserversId.length > 0) { // Must be confirmed from user
+            const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(step.recipient.id);
             if (index != 0) {
                 return Err("WrongStepInDeliverySequence");
             }
@@ -338,7 +339,7 @@ export const ShipmentProvider: React.FC<React.ReactNode> = ({ children }): JSX.E
                 removeReserver
             }
         }>
-            {children}
+            {/* {children} */}
         </ShipmentContext.Provider>
     )
 }

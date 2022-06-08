@@ -1,22 +1,22 @@
-interface AvailabilityPeriod {
+export interface AvailabilityPeriod {
     day: string
     from: string
     to: string
 }
 
-enum DateFormat {
+export enum DateFormat {
     FORMAT_12_HOUR = 'h:mm A',
     FORMAT_24_HOUR = 'HH:mm'
 }
 
-interface IAvailability {
-    times: Map<string, Map<string, string>> = new Map<string, Map<string, string>>();
+export interface IAvailability {
+    times: Map<string, Map<string, string>>;
     format: DateFormat;
 }
 
 export type AvailabilityContextType = {
     availabilityInfo: IAvailability;
-    setAvailability(availability: AvailabilityPeriod);
+    setAvailability(availability: AvailabilityPeriod): void;
     isAvailable(datetime: Date) : boolean;
     availabilityWithinRange(datetime1: Date, datetime2: Date) : boolean;
 }

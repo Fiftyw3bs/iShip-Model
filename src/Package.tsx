@@ -27,14 +27,19 @@ export const defaultPackageInfo = {
     size: {length:0, height: 0, width: 0}
 }
 
-export const PackageContext = createContext({packageInfo: defaultPackageInfo});
+export type PackageContextType = {
+    packageInfo: IPackage;
+    saveContent(data: IPackage): void;
+}
+
+export const PackageContext = createContext<PackageContextType | null>(null);
 
 function Package() {
 
     const { register, handleSubmit } = useForm<IPackage>();
     const [packageInfo, setPackageInfo] = useState<IPackage>(defaultPackageInfo);
 
-    const setData = (data: IPackage) => {
+    const saveContent = (data: IPackage) => {
         setPackageInfo({
             description: data.description,
             type: data.type,
@@ -44,8 +49,8 @@ function Package() {
     }
 
     return (
-        <PackageContext.Provider value={{packageInfo}}>
-            <form onSubmit={handleSubmit((data) => setData(data))}>
+        <PackageContext.Provider value={{packageInfo, saveContent}}>
+            <form onSubmit={handleSubmit((data) => saveContent(data))}>
                 <div className="input-group mb-3">
                     <span className="input-group-text" id="basic-addon1">Description</span>
                     <input {...register("description"), { required: true }} type="text" className="form-control" placeholder="description" aria-label="description" aria-describedby="basic-addon1" />

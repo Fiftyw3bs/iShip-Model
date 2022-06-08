@@ -1,4 +1,3 @@
-import Sender from "../user/Sender";
 import { Err, Errors, Ok, OkMessage, Result } from "../interfaces/Errors";
 import { createContext, useContext, useState } from "react";
 import React from "react";
@@ -6,10 +5,11 @@ import { DeliveryRequestContextType, DeliveryRequestState, IDeliveryRequest } fr
 import { ShipmentContext } from "./shipmentContext";
 import { IShipment, ShipmentContextType } from "../@types/shipment";
 import { v4 } from "uuid";
+import { ISender } from "../@types/user";
 
 export const DeliveryRequestContext = createContext<DeliveryRequestContextType | null>(null)
 
-export const DeliveryRequestProvider: React.FC<React.ReactNode> = ({ children }) => {
+export const DeliveryRequestProvider: React.FC<React.ReactNode> = () => {
 
     const [deliveryRequestInfo, setDeliveryRequestInfo] = useState<IDeliveryRequest[]>([]);
 
@@ -28,12 +28,12 @@ export const DeliveryRequestProvider: React.FC<React.ReactNode> = ({ children })
         ])
     }
 
-    const accept = async (request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>> => {
+    const accept = async (request: IDeliveryRequest, sender: ISender): Promise<Result<OkMessage, Errors>> => {
         return await useContext(ShipmentContext)?.getShipmentById(request.shipmentId).then(
             async (value: Result<IShipment, Errors>) => {
                 if (value.ok) {
                     const shipment = value.val
-                    if (sender.id == shipment.sender.id) {
+                    if (sender.id == shipment.senderId) {
                         return await addDeliveryStep(request.step).then(
                             e => e.andThen(
                                 () => {
@@ -55,12 +55,12 @@ export const DeliveryRequestProvider: React.FC<React.ReactNode> = ({ children })
         )
     }
 
-    const reject = async (request: IDeliveryRequest, sender: Sender): Promise<Result<OkMessage, Errors>> => {
+    const reject = async (request: IDeliveryRequest, sender: ISender): Promise<Result<OkMessage, Errors>> => {
         return await useContext(ShipmentContext)?.getShipmentById(request.shipmentId).then(
             async (value: Result<IShipment, Errors>) => {
                 if (value.ok) {
                     const shipment = value.val
-                    if (shipment.sender.id == sender.id) {
+                    if (shipment.senderId == sender.id) {
                         return new Promise<Result<OkMessage, Errors>>(
                             (resolve) => {
                                 setDeliveryRequestInfo((prevData) => {
@@ -82,7 +82,9 @@ export const DeliveryRequestProvider: React.FC<React.ReactNode> = ({ children })
 
     return (
         <DeliveryRequestContext.Provider value={{ deliveryRequestInfo, saveDeliveryRequestInfo, accept, reject }}>
-            {children}
+            {/* {children} */}
         </DeliveryRequestContext.Provider>
     )
 }
+
+export default DeliveryRequestProvider;

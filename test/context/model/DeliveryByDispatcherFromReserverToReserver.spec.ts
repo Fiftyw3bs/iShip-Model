@@ -1,10 +1,10 @@
 import 'mocha';
-import { Package, PackageType } from "../../src/Package";
+import { Package, PackageType } from "../../../src/Package";
 import Shipment, { ShipmentState } from "../../src/Shipment";
-import { DeliveryStepType, delivery_step, FaultType, user, user_fault } from "../helper.test";
+import { DeliveryStepType, delivery_step, FaultType, user, user_fault } from "../../helper.test";
 import { DispatchState } from "../../src/DeliveryStep";
 import DeliveryByDispatcherFromReserverToReserver from "../../src/delivery/DeliveryByDispatcherFromReserverToReserver";
-import { Err, Ok } from '../../src/interfaces/Errors';
+import { Err, Ok } from '../../../src/interfaces/Errors';
 let chai = require('chai').use(require('chai-as-promised'))
 let expect = chai.expect
 

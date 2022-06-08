@@ -2,12 +2,11 @@ import { createContext, useState } from "react";
 import { v4 } from "uuid";
 import { defaultDeliveryStep, DeliveryStepContextType, DispatchState, IDeliveryStep } from "../@types/deliveryStep";
 import { Err, Errors, Ok, Result } from "../interfaces/Errors";
-import Dispatcher from "../user/Dispatcher";
-import RegisteredUser from "../user/User";
+import ILoggedInUser, { IDispatcher } from "../@types/user";
 
 export const DeliveryStepContext = createContext<DeliveryStepContextType | null>(null);
 
-export const DeliveryStepProvider: React.FC<React.ReactNode> = ({ children }) => {
+export const DeliveryStepProvider: React.FC<React.ReactNode> = () => {
 
     const [deliveryStepInfo, setDeliveryStepInfo] = useState<IDeliveryStep[]>([defaultDeliveryStep]);
 
@@ -53,7 +52,7 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = ({ children }) =>
         )
     }
 
-    const getByDispatcher = (dispatcher: Dispatcher): Promise<Result<IDeliveryStep[], Errors>> => {
+    const getByDispatcher = (dispatcher: IDispatcher): Promise<Result<IDeliveryStep[], Errors>> => {
         return new Promise(
             (resolve, reject) => {
                 const steps = deliveryStepInfo.filter(e => { return e.dispatcher.id == dispatcher.id })
@@ -62,7 +61,7 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = ({ children }) =>
         )
     }
 
-    const getByRecipient = (recipient: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>> => {
+    const getByRecipient = (recipient: ILoggedInUser): Promise<Result<IDeliveryStep[], Errors>> => {
         return new Promise(
             (resolve, reject) => {
                 const steps = deliveryStepInfo.filter(e => { return e.recipient.id == recipient.id })
@@ -71,7 +70,7 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = ({ children }) =>
         )
     }
 
-    const getBySource = (source: RegisteredUser): Promise<Result<IDeliveryStep[], Errors>> => {
+    const getBySource = (source: ILoggedInUser): Promise<Result<IDeliveryStep[], Errors>> => {
         return new Promise(
             (resolve, reject) => {
                 const steps = deliveryStepInfo.filter(e => { return e.source.id == source.id })
@@ -103,7 +102,6 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = ({ children }) =>
                 getByState
             }
         }>
-            {children}
         </DeliveryStepContext.Provider>
     )
 }
