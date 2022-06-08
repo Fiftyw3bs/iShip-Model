@@ -343,3 +343,5 @@ export const ShipmentProvider: React.FC<React.ReactNode> = (): JSX.Element => {
         </ShipmentContext.Provider>
     )
 }
+
+export default ShipmentProvider;

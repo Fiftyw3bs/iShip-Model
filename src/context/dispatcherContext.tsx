@@ -10,7 +10,7 @@ import { v4 } from "uuid";
 
 export const DispatcherContext = createContext<DispatcherContextType | null>(null);
 
-export const Dispatcher: React.FC<React.ReactNode> = () => {
+export const DispatcherProvider: React.FC<React.ReactNode> = () => {
 
     const [dispatcherInfo, setDispatcherInfo] = useState<IDispatcher[]>([]);
     
@@ -38,4 +38,4 @@ export const Dispatcher: React.FC<React.ReactNode> = () => {
     );
 }
 
-export default Dispatcher   
+export default DispatcherProvider   

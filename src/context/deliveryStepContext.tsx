@@ -105,3 +105,5 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = () => {
         </DeliveryStepContext.Provider>
     )
 }
+
+export default DeliveryStepProvider;

@@ -7,7 +7,7 @@ import { IReserver } from "../@types/user";
 
 export const ReserveRequestContext = createContext<ReserveRequestContextType | null>(null);
 
-export const ReserveRequest: React.FC<React.ReactNode> = () => {
+export const ReserveRequestProvider: React.FC<React.ReactNode> = () => {
 
     const [reserveRequestInfo, setReserveRequestInfo] = useState<IReserveRequest[]>([defaultReserveRequest]);
     const { removeReserver } = useContext(ShipmentContext) as ShipmentContextType;
@@ -60,3 +60,5 @@ export const ReserveRequest: React.FC<React.ReactNode> = () => {
         </ReserveRequestContext.Provider>
     )
 }
+
+export default ReserveRequestProvider;
