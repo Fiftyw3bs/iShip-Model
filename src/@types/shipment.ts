@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 import { Errors, OkMessage, Result } from "../interfaces/Errors";
 import { IPackage } from "../Package";
 import { IDeliveryStep } from "./deliveryStep";
-import ILoggedInUser, { IReceiver, IReserver, ISender } from "./user";
+import ILoggedInUser, { Id, IReceiver, IReserver, ISender } from "./user";
 
 export enum Priority {
     Low = 1,
@@ -19,9 +19,9 @@ export enum ShipmentState {
 
 export interface IShipment {
     content: IPackage;
-    reserversId: Array<string>;
-    senderId: string;
-    id: string;
+    reserversId: Array<Id>;
+    senderId: Id;
+    id: Id;
     currentHolder: ILoggedInUser;
     receiver: IReceiver;
     state: ShipmentState;
@@ -30,12 +30,12 @@ export interface IShipment {
 
 export type ShipmentContextType = {
     shipmentInfo: IShipment[];
-    getShipmentById(id: string): Promise<Result<IShipment, Errors>>;
+    getShipmentById(id: Id): Promise<Result<IShipment, Errors>>;
     getShipmentBySender(sender: ISender): Promise<Result<IShipment[], Errors>>;
     saveShipmentInfo(data: IShipment): void;
     addDeliveryStep(step: IDeliveryStep): Promise<Result<OkMessage, Errors>>;
     addReserver(shipmentInfo: IShipment, reserver: IReserver): Promise<Result<OkMessage, Errors>>;
-    removeReserver(shipmentInfo: IShipment, reserverId: string): Promise<Result<OkMessage, Errors>>;
+    removeReserver(shipmentInfo: IShipment, reserverId: Id): Promise<Result<OkMessage, Errors>>;
     pickup(shipmentInfo: IShipment, step: IDeliveryStep): Promise<Result<OkMessage, Errors>>;
     deliver(shipmentInfo: IShipment, step: IDeliveryStep): Promise<Result<OkMessage, Errors>>;
 }

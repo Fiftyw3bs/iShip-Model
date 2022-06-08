@@ -8,6 +8,8 @@ import { IDeliveryStep } from "./deliveryStep";
 import { IReserveRequest } from "./reserveRequest";
 import { IShipment } from "./shipment";
 
+export type Id = string;
+
 enum VehicleType {
     Bike = 1,
     Car,
@@ -16,7 +18,7 @@ enum VehicleType {
 
 export default interface ILoggedInUser {
     available: IAvailability;
-    id: string;
+    id: Id;
 }
 
 export interface IReserver extends ILoggedInUser {

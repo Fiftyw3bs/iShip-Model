@@ -2,7 +2,7 @@ import Cost from "../interfaces/Cost";
 import { Errors, OkMessage, Result } from "../interfaces/Errors";
 import { IDeliveryStep } from "./deliveryStep";
 import { IShipment } from "./shipment";
-import { ISender } from "./user";
+import { Id, ISender } from "./user";
 
 export enum DeliveryRequestState {
     AWAITING_APPROVAL,
@@ -11,11 +11,11 @@ export enum DeliveryRequestState {
 }
 
 export interface IDeliveryRequest {
-    shipmentId: string;
+    shipmentId: Id;
     state: DeliveryRequestState
     step: IDeliveryStep;
     cost: Cost;
-    id: string;
+    id: Id;
 }
 
 export type DeliveryRequestContextType = {

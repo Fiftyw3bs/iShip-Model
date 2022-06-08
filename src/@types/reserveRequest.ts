@@ -1,9 +1,9 @@
 import { Errors, OkMessage, Result } from "../interfaces/Errors";
-import { IReserver } from "./user";
+import { Id, IReserver } from "./user";
 
 export interface IReserveRequest {
-    shipmentId:     string;
-    reserverId:     string;
+    shipmentId:     Id;
+    reserverId:     Id;
     requestedAt:    Date;
 }
 

@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 import { v4 } from "uuid";
 import { defaultDeliveryStep, DeliveryStepContextType, DispatchState, IDeliveryStep } from "../@types/deliveryStep";
 import { Err, Errors, Ok, Result } from "../interfaces/Errors";
-import ILoggedInUser, { IDispatcher } from "../@types/user";
+import ILoggedInUser, { Id, IDispatcher } from "../@types/user";
 
 export const DeliveryStepContext = createContext<DeliveryStepContextType | null>(null);
 
@@ -43,7 +43,7 @@ export const DeliveryStepProvider: React.FC<React.ReactNode> = () => {
         )
     }
 
-    const getByShipmentId = (shipmentId: string): Promise<Result<IDeliveryStep, Errors>> => {
+    const getByShipmentId = (shipmentId: Id): Promise<Result<IDeliveryStep, Errors>> => {
         return new Promise(
             (resolve, reject) => {
                 const index = deliveryStepInfo.map(e => { return e.shipmentId }).indexOf(shipmentId)

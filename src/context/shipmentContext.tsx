@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { v4 } from "uuid";
 import { DeliveryStep, DispatchState, IDeliveryStep } from "../@types/deliveryStep";
 import { ShipmentContextType, IShipment, ShipmentState } from "../@types/shipment";
-import { IDispatcher, IReceiver, IReserver, ISender } from "../@types/user";
+import { Id, IDispatcher, IReceiver, IReserver, ISender } from "../@types/user";
 import { Err, Errors, Ok, OkMessage, Result } from "../interfaces/Errors";
 import { PackageType } from "../Package";
 import { DeliveryStepContext } from "./deliveryStepContext";
@@ -130,7 +130,7 @@ export const ShipmentProvider: React.FC<React.ReactNode> = (): JSX.Element => {
         );
     }
 
-    const removeReserver = (shipmentInfo: IShipment, reserverId: string): Promise<Result<OkMessage, Errors>> => {
+    const removeReserver = (shipmentInfo: IShipment, reserverId: Id): Promise<Result<OkMessage, Errors>> => {
         return new Promise<Result<OkMessage, Errors>>(
             (resolve, reject) => {
                 const index = shipmentInfo.reserversId.map(e => { return e }).indexOf(reserverId);

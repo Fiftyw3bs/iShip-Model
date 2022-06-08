@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { Errors, Result } from "../interfaces/Errors";
-import ILoggedInUser, { IDispatcher } from "./user";
+import ILoggedInUser, { Id, IDispatcher } from "./user";
 
 export enum DispatchState {
     PENDING = 0,
@@ -10,8 +10,8 @@ export enum DispatchState {
 }
 
 export interface IDeliveryStep {
-    id:                             string;
-    shipmentId:                     string;
+    id:                             Id;
+    shipmentId:                     Id;
     dispatcher:                     ILoggedInUser;
     source:                         ILoggedInUser;
     recipient:                      ILoggedInUser;
