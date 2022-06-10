@@ -33,7 +33,7 @@ export const DeliveryRequestProvider: React.FC<React.ReactNode> = () => {
             async (value: Result<IShipment, Errors>) => {
                 if (value.ok) {
                     const shipment = value.val
-                    if (sender.id == shipment.senderId) {
+                    if (sender.id == shipment.sender) {
                         return await addDeliveryStep(request.step).then(
                             e => e.andThen(
                                 () => {
@@ -60,7 +60,7 @@ export const DeliveryRequestProvider: React.FC<React.ReactNode> = () => {
             async (value: Result<IShipment, Errors>) => {
                 if (value.ok) {
                     const shipment = value.val
-                    if (shipment.senderId == sender.id) {
+                    if (shipment.sender == sender.id) {
                         return new Promise<Result<OkMessage, Errors>>(
                             (resolve) => {
                                 setDeliveryRequestInfo((prevData) => {

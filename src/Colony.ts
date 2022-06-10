@@ -1,7 +1,7 @@
-import { IDispatcher, IReserver } from "./@types/user";
+import { Id } from "./@types/user";
 
 export interface Colony {
     name: string;
-    reservers: Array<IReserver>;
-    dispatchers: Array<IDispatcher>;
+    reservers: Array<Id>;
+    dispatchers: Array<Id>;
 }

@@ -33,7 +33,7 @@ export const ReserveRequestProvider: React.FC<React.ReactNode> = () => {
                     if (reserveRequestInfo[index].reserverId != reserver.id) {
                         return Promise.reject(Err("InvalidUser"))
                     }
-                    if (shipment.senderId == reserveRequestInfo[index].reserverId) {
+                    if (shipment.sender == reserveRequestInfo[index].reserverId) {
                         return Promise.reject(Err("SenderCantBeReserver"))
                     }
                     if (shipment.receiver.id == reserveRequestInfo[index].reserverId) {

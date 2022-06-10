@@ -1,22 +1,41 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { IShipment, ShipmentContextType } from "../@types/shipment";
-import { ShipmentContext } from "../context/shipmentContext";
+import { IShipment, ShipmentState } from "../@types/shipment";
+import { useOrbitDb } from "react-orbitdb";
+import { PackageContext, PackageContextType } from "../Package";
+import { LoggedInUserContextType } from "../@types/user";
+import { LoggedInUserContext } from "../context/loggedInUserContext";
+import { v4 } from "uuid";
 
 const CreateShipment = () => {
-    const { saveShipmentInfo } = React.useContext(ShipmentContext) as ShipmentContextType;
+    const { loggedInUserInfo } = React.useContext(LoggedInUserContext) as LoggedInUserContextType;
+    const { packageInfo } = React.useContext(PackageContext) as PackageContextType;
 
     const { register, handleSubmit } = useForm<IShipment>();
 
-    const handleShipmentCreation = (data: IShipment) => {
-        saveShipmentInfo(data);
+    const { db, records } = useOrbitDb('shipshipft-shipment', {
+        type: "docstore",
+        create: true,
+        public: true,
+    });
+
+    const handleShipmentCreation = async (data: IShipment) => {
+        await db.put(data);
     }
 
     return (
-        <form onSubmit={handleSubmit((data) => handleShipmentCreation(data))}>
+        <form onSubmit={handleSubmit((data) => {
+            data.content = packageInfo;
+            data.sender = loggedInUserInfo.id;
+            data.id = v4();
+            data.currentHolder = loggedInUserInfo.id;
+            data.state = ShipmentState.AWAITING_PICKUP;
+            data.creationTime = new Date();
+            handleShipmentCreation(data)
+        })}>
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon1">Source</span>
-                <input {...register("description"), { required: true }} type="text" className="form-control" placeholder="description" aria-label="description" aria-describedby="basic-addon1" />
+                <input {...register("receiver"), { required: true }} type="text" className="form-control" placeholder="description" aria-label="description" aria-describedby="basic-addon1" />
             </div>
             <div className="input-group mb-3">
                 <span className="input-group-text" id="basic-addon1">Destination</span>

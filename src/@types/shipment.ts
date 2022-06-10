@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 import { Errors, OkMessage, Result } from "../interfaces/Errors";
 import { IPackage } from "../Package";
 import { IDeliveryStep } from "./deliveryStep";
-import ILoggedInUser, { Id, IReceiver, IReserver, ISender } from "./user";
+import { Id, IReceiver, IReserver, ISender } from "./user";
 
 export enum Priority {
     Low = 1,
@@ -19,10 +19,10 @@ export enum ShipmentState {
 
 export interface IShipment {
     content: IPackage;
-    reserversId: Array<Id>;
-    senderId: Id;
+    reservers: Array<Id>;
+    sender: Id;
     id: Id;
-    currentHolder: ILoggedInUser;
+    currentHolder: Id;
     receiver: IReceiver;
     state: ShipmentState;
     creationTime: Date;
@@ -42,10 +42,10 @@ export type ShipmentContextType = {
 
 export const defaultShipmentInfo: IShipment = {
     content: <IPackage>{},
-    reserversId: [],
-    senderId: "UNASSIGNED",
+    reservers: [],
+    sender: "UNASSIGNED",
     id: v4(),
-    currentHolder: <ILoggedInUser>{},
+    currentHolder: "UNASSIGNED",
     receiver: <IReceiver>{},
     state: ShipmentState.AWAITING_PICKUP,
     creationTime: new Date(),

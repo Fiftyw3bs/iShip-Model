@@ -23,8 +23,8 @@ describe('Shipment', () => {
 
         saveShipmentInfo(<IShipment>{
             content: packageInfo,
-            reserversId: ["UNASSIGNED"],
-            senderId: "UNASSIGNED",
+            reservers: ["UNASSIGNED"],
+            sender: "UNASSIGNED",
             receiver: <IReceiver>{}
         })
 

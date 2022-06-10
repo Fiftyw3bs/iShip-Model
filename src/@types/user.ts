@@ -17,15 +17,27 @@ enum VehicleType {
 }
 
 export default interface ILoggedInUser {
-    available: IAvailability;
     id: Id;
+}
+
+export type LoggedInUserContextType = {
+    loggedInUserInfo: ILoggedInUser;
+    location: Address;
+    availability: IAvailability;
+    setLoggedInUserInfo: React.Dispatch<React.SetStateAction<ILoggedInUser>>;
+    setLocation: React.Dispatch<React.SetStateAction<Address>>;
+    setAvailability: React.Dispatch<React.SetStateAction<IAvailability>>;
 }
 
 export interface IReserver extends ILoggedInUser {
     costPerHour: Cost;
     packageType: PackageType;
-    location: Address;
     reserveRequests: Array<IReserveRequest>;
+}
+
+export type ReserverContextType = {
+    reservers: IReserver[];
+    setReserver: React.Dispatch<React.SetStateAction<ILoggedInUser>>;
 }
 
 export interface IReceiver extends ILoggedInUser {
