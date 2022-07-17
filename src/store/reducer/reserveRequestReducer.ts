@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
-import { IReserveRequest } from '../@types/reserveRequest'
-import { Action_Redux, initialtReserveRequestState, State_Redux } from './actionCreators'
-import * as actionTypes from './actionTypes'
+import { IReserveRequest } from '../../@types/reserveRequest'
+import { Action_Redux, initialtReserveRequestState, State_Redux } from './../actionCreators'
+import * as actionTypes from './../actionTypes'
 
 const reserveRequestReducer = (
     state: State_Redux<IReserveRequest> = initialtReserveRequestState,

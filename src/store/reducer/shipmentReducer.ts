@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
-import { IShipment, ShipmentState } from '../@types/shipment'
-import { Action_Redux, initialtShipmentState, State_Redux } from './actionCreators'
-import * as actionTypes from './actionTypes'
+import { IShipment, ShipmentState } from '../../@types/shipment'
+import { Action_Redux, initialtShipmentState, State_Redux } from './../actionCreators'
+import * as actionTypes from './../actionTypes'
 
 const shipmentReducer = (
     state: State_Redux<IShipment> = initialtShipmentState,

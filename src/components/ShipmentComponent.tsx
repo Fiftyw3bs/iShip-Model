@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { IShipment, ShipmentState } from "../@types/shipment";
-import { useOrbitDb } from "react-orbitdb";
+import { OrbitProvider, useOrbitDb } from "react-orbitdb";
 import { PackageContext, PackageContextType } from "../Package";
 import { LoggedInUserContextType } from "../@types/user";
 import { LoggedInUserContext } from "../context/loggedInUserContext";
@@ -13,7 +13,7 @@ const CreateShipment = () => {
 
     const { register, handleSubmit } = useForm<IShipment>();
 
-    const { db, records } = useOrbitDb('shipshipft-shipment', {
+    const { db, records } = useOrbitDb('shipshift-shipment', {
         type: "docstore",
         create: true,
         public: true,
