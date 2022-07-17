@@ -20,6 +20,7 @@ export enum ShipmentState {
 export interface IShipment {
     content: IPackage;
     reservers: Array<Id>;
+    dispatchSteps?: Array<Id>;
     sender: Id;
     id: Id;
     currentHolder: Id;
@@ -43,6 +44,7 @@ export type ShipmentContextType = {
 export const defaultShipmentInfo: IShipment = {
     content: <IPackage>{},
     reservers: [],
+    dispatchSteps: [],
     sender: "UNASSIGNED",
     id: v4(),
     currentHolder: "UNASSIGNED",

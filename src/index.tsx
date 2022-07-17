@@ -1,11 +1,19 @@
-import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Package } from "./Package";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux"
+import { configureStore } from "@reduxjs/toolkit"
+import thunk from "redux-thunk"
+import allReducers from "./store/reducer";
+
+// const store: Store<State_Redux, Action_Redux<IShipment>> & {
+//   dispatch: ShipmentDispatchType
+// } = createStore(shipmentReducer, applyMiddleware(thunk))
+
+const store = configureStore({reducer: allReducers}); createStore(allReducers, applyMiddleware(thunk))
 
 ReactDOM.render(
-    <div>
-      <h1>Hello, Welcome to React and TypeScript</h1>
-      <Package />
-    </div>,
+    <Provider store={store}>
+      {/* <App /> */}
+    </Provider>,
     document.getElementById("root")
 );

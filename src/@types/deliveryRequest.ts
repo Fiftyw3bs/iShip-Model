@@ -1,7 +1,6 @@
 import Cost from "../interfaces/Cost";
 import { Errors, OkMessage, Result } from "../interfaces/Errors";
 import { IDeliveryStep } from "./deliveryStep";
-import { IShipment } from "./shipment";
 import { Id, ISender } from "./user";
 
 export enum DeliveryRequestState {
@@ -16,6 +15,7 @@ export interface IDeliveryRequest {
     step: IDeliveryStep;
     cost: Cost;
     id: Id;
+    creationTime: Date;
 }
 
 export type DeliveryRequestContextType = {
@@ -25,9 +25,11 @@ export type DeliveryRequestContextType = {
     reject(request: IDeliveryRequest, sender: ISender): Promise<Result<OkMessage, Errors>>;
 }
 
-export const defaultDeliveryRequest = {
-    shipment: <IShipment>{},
+export const defaultDeliveryRequest: IDeliveryRequest = {
+    shipmentId: 'UNASSIGNED',
     state: DeliveryRequestState.AWAITING_APPROVAL,
     step: <IDeliveryStep>{},
     cost: {amount: 0, currency: 'ADA'},
+    id: 'UNASSIGNED',
+    creationTime: new Date(),
 }

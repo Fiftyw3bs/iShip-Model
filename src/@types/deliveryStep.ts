@@ -17,6 +17,7 @@ export interface IDeliveryStep {
     recipient:                      ILoggedInUser;
     completionTime:                 Date;
     dispatchState:                  DispatchState;
+    creationTime:                   Date;
 }
 
 export type DeliveryStepContextType = {
@@ -40,5 +41,6 @@ export const defaultDeliveryStep: IDeliveryStep = {
     dispatchState:  DispatchState.PENDING,
     id:             v4(),
     dispatcher:     <ILoggedInUser>{},
-    shipmentId:     "UNASSIGNED"
+    shipmentId:     "UNASSIGNED",
+    creationTime: new Date(),
 }
