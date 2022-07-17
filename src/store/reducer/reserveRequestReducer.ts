@@ -1,12 +1,12 @@
 import { v4 } from 'uuid'
 import { IReserveRequest } from '../@types/reserveRequest'
-import { Action_Redux, initialState, State_Redux } from './actionCreators'
+import { Action_Redux, initialtReserveRequestState, State_Redux } from './actionCreators'
 import * as actionTypes from './actionTypes'
 
 const reserveRequestReducer = (
-    state: State_Redux = initialState,
+    state: State_Redux<IReserveRequest> = initialtReserveRequestState,
     action: Action_Redux<IReserveRequest>
-): State_Redux => {
+): State_Redux<IReserveRequest> => {
     switch (action.type) {
         case actionTypes.ADD: {
             const newReserReserveRequest: IReserveRequest = {
@@ -18,33 +18,30 @@ const reserveRequestReducer = (
             }
             return {
                 ...state,
-                reserveRequests: state.reserveRequests.concat(newReserReserveRequest),
+                objects: state.objects.concat(newReserReserveRequest),
             }
         }
         case actionTypes.REMOVE: {
-            const updatedReserveRequests: IReserveRequest[] = state.reserveRequests.filter(
+            const updatedReserveRequests: IReserveRequest[] = state.objects.filter(
                 reserveRequest => reserveRequest.id !== action.object.id
             )
             return {
                 ...state,
-                reserveRequests: updatedReserveRequests,
+                objects: updatedReserveRequests,
             }
         }
         case actionTypes.UPDATE: {
-            const index = state.reserveRequests.findIndex((object) => object.id === action.object.id)
-            const updatedReserveRequest = {
+            const index = state.objects.findIndex((object) => object.id === action.object.id)
+            const updatedReserveRequest: IReserveRequest = {
                 ...action.object, 
-                sender: state.shipments[index].sender, 
-                receiver: state.shipments[index].receiver,
-                creationTime: state.shipments[index].creationTime,
-                content: state.shipments[index].content,
+                requestedAt: action.object.requestedAt
             }
             const updated = {
                 ...state,
-                reserveRequests: [
-                    ...state.reserveRequests.slice(0, index),
-                    action.object,
-                    ...state.reserveRequests.slice(index + 1)
+                objects: [
+                    ...state.objects.slice(0, index),
+                    updatedReserveRequest,
+                    ...state.objects.slice(index + 1)
                 ]
             }
             return updated;

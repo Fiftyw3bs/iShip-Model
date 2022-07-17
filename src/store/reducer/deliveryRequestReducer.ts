@@ -1,12 +1,12 @@
 import { v4 } from 'uuid'
-import { IDeliveryRequest } from '../@types/deliveryRequest'
-import { Action_Redux, initialState, State_Redux } from './actionCreators'
-import * as actionTypes from './actionTypes'
+import { IDeliveryRequest } from '../../@types/deliveryRequest'
+import { Action_Redux, initialtDeliveryRequestState, State_Redux } from '../actionCreators'
+import * as actionTypes from '../actionTypes'
 
 const deliveryRequestReducer = (
-    state: State_Redux = initialState,
+    state: State_Redux<IDeliveryRequest> = initialtDeliveryRequestState,
     action: Action_Redux<IDeliveryRequest>
-): State_Redux => {
+): State_Redux<IDeliveryRequest> => {
     switch (action.type) {
         case actionTypes.ADD: {
             const newDeliveryRequest: IDeliveryRequest = {
@@ -19,26 +19,26 @@ const deliveryRequestReducer = (
             }
             return {
                 ...state,
-                deliveryRequests: state.deliveryRequests.concat(newDeliveryRequest),
+                objects: state.objects.concat(newDeliveryRequest),
             }
         }
         case actionTypes.REMOVE: {
-            const updatedDeliveryRequests: IDeliveryRequest[] = state.deliveryRequests.filter(
+            const updatedDeliveryRequests: IDeliveryRequest[] = state.objects.filter(
                 deliveryRequest => deliveryRequest.id !== action.object.id
             )
             return {
                 ...state,
-                deliveryRequests: updatedDeliveryRequests,
+                objects: updatedDeliveryRequests,
             }
         }
         case actionTypes.UPDATE: {
-            const index = state.deliveryRequests.findIndex((object) => object.id === action.object.id)
+            const index = state.objects.findIndex((object) => object.id === action.object.id)
             const updated = {
                 ...state,
-                deliveryRequests: [
-                    ...state.deliveryRequests.slice(0, index),
+                objects: [
+                    ...state.objects.slice(0, index),
                     action.object,
-                    ...state.deliveryRequests.slice(index + 1)
+                    ...state.objects.slice(index + 1)
                 ]
             }
             return updated;

@@ -37,11 +37,8 @@ export function simulateHttpRequest<T>(action: Action_Redux<T>) {
     }
 }
 
-export type State_Redux = {
-    shipments: IShipment[],
-    deliverySteps: IDeliveryStep[],
-    deliveryRequests: IDeliveryRequest[],
-    reserveRequests: IReserveRequest[]
+export type State_Redux<T> = {
+    objects: T[]
 }
 
 export type Action_Redux<T> = {
@@ -56,9 +53,18 @@ export type DeliveryStepDispatchType = DispatchType<IDeliveryStep>
 export type DeliveryRequestDispatchType = DispatchType<IDeliveryRequest>
 export type ReserveRequestDispatchType = DispatchType<IReserveRequest>
 
-export const initialState: State_Redux = {
-    shipments: [defaultShipmentInfo],
-    deliverySteps: [defaultDeliveryStep],
-    deliveryRequests: [defaultDeliveryRequest],
-    reserveRequests: [defaultReserveRequest]
+export const initialtShipmentState: State_Redux<IShipment> = {
+    objects: [defaultShipmentInfo]
+}
+
+export const initialtDeliveryRequestState: State_Redux<IDeliveryRequest> = {
+    objects: [defaultDeliveryRequest]
+}
+
+export const initialtReserveRequestState: State_Redux<IReserveRequest> = {
+    objects: [defaultReserveRequest]
+}
+
+export const initialDeliveryStepState: State_Redux<IDeliveryStep> = {
+    objects: [defaultDeliveryStep]
 }

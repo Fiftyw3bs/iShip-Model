@@ -1,12 +1,12 @@
 import { v4 } from 'uuid'
-import { IShipment } from '../@types/shipment'
-import { Action_Redux, initialState, State_Redux } from './actionCreators'
+import { IShipment, ShipmentState } from '../@types/shipment'
+import { Action_Redux, initialtShipmentState, State_Redux } from './actionCreators'
 import * as actionTypes from './actionTypes'
 
 const shipmentReducer = (
-    state: State_Redux = initialState,
+    state: State_Redux<IShipment> = initialtShipmentState,
     action: Action_Redux<IShipment>
-): State_Redux => {
+): State_Redux<IShipment> => {
     switch (action.type) {
         case actionTypes.ADD: {
             const newShipment: IShipment = {
@@ -16,38 +16,35 @@ const shipmentReducer = (
                 sender: action.object.sender,
                 currentHolder: action.object.currentHolder,
                 receiver: action.object.receiver,
-                state: action.object.state,
+                state: ShipmentState.AWAITING_PICKUP,
                 creationTime: new Date()
             }
             return {
                 ...state,
-                shipments: state.shipments.concat(newShipment),
+                objects: state.objects.concat(newShipment),
             }
         }
         case actionTypes.REMOVE: {
-            const updatedShipments: IShipment[] = state.shipments.filter(
+            const updatedShipments: IShipment[] = state.objects.filter(
                 shipment => shipment.id !== action.object.id
             )
             return {
                 ...state,
-                shipments: updatedShipments,
+                objects: updatedShipments,
             }
         }
         case actionTypes.UPDATE: {
-            const index = state.shipments.findIndex((object) => object.id === action.object.id)
-            const updatedShipment = {
+            const index = state.objects.findIndex((object) => object.id === action.object.id)
+            const updatedShipment: IShipment = {
                 ...action.object, 
-                sender: state.shipments[index].sender, 
-                receiver: state.shipments[index].receiver,
-                creationTime: state.shipments[index].creationTime,
-                content: state.shipments[index].content,
+                state: action.object.state
             }
             const updated = {
                 ...state,
-                shipments: [
-                    ...state.shipments.slice(0, index),
+                objects: [
+                    ...state.objects.slice(0, index),
                     updatedShipment,
-                    ...state.shipments.slice(index + 1)
+                    ...state.objects.slice(index + 1)
                 ]
             }
             return updated;
