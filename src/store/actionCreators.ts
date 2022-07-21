@@ -53,7 +53,7 @@ export type DeliveryStepDispatchType = DispatchType<IDeliveryStep>
 export type DeliveryRequestDispatchType = DispatchType<IDeliveryRequest>
 export type ReserveRequestDispatchType = DispatchType<IReserveRequest>
 
-export const initialtShipmentState: State_Redux<IShipment> = {
+export const initialShipmentState: State_Redux<IShipment> = {
     objects: [defaultShipmentInfo]
 }
 
