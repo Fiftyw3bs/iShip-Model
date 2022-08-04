@@ -41,10 +41,20 @@ export type State_Redux<T> = {
     objects: T[]
 }
 
+export type ShipmentState = State_Redux<IShipment>
+export type DeliveryStepState = State_Redux<IDeliveryStep>
+export type DeliveryRequestState = State_Redux<IDeliveryRequest>
+export type ReserveRequestState = State_Redux<IReserveRequest>
+
 export type Action_Redux<T> = {
     type: string,
     object: T
 }
+
+export type ShipmentAction = Action_Redux<IShipment>
+export type DeliveryStepAction = Action_Redux<IDeliveryStep>
+export type DeliveryRequestAction = Action_Redux<IDeliveryRequest>
+export type ReserveRequestAction = Action_Redux<IReserveRequest>
 
 type DispatchType<T> = (args: Action_Redux<T>) => Action_Redux<T>
 
