@@ -1,3 +1,6 @@
 [submodule "lib/node-session-client"]
 	path = lib/node-session-client
 	url = https://github.com/hesiod-project/node-session-client.git
+[submodule "lib/blockfrost-js"]
+	path = lib/blockfrost-js
+	url = https://github.com/blockfrost/blockfrost-js
